@@ -1,46 +1,18 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zooper_table/zooper_table.dart';
 
-class ColumnStateNotifier<TData> extends ChangeNotifier {
-  final TableConfiguration<TData> tableConfiguration;
+class ColumnStateNotifier extends StateNotifier<List<ZooperColumnModel>> {
+  ColumnStateNotifier(List<ZooperColumnModel> columns) : super(columns);
 
-  final List<ZooperColumnModel> columns;
+  List<ZooperColumnModel> get currentState => state;
 
-  ColumnStateNotifier(
-    this.tableConfiguration,
-    this.columns,
-  );
-
-  void updateColumnWidthByIdentifier(String identifier, double delta) {
-    var index = columns.indexWhere((element) => element.identifier == identifier);
-
-    return updateColumnWidthByIndex(index, delta);
-  }
-
-  void updateColumnWidthByIndex(int index, double delta) {
-    var column = columns[index];
-
-    updateColumnWidth(column, delta);
-  }
-
-  void updateColumnWidth(ZooperColumnModel column, double delta) {
-    // set the columns width to the new width
-    column.width += delta;
-
-    final minWidth = tableConfiguration.columnHeaderConfiguration.minWidthBuilder(column.identifier);
-    final maxWidth = tableConfiguration.columnHeaderConfiguration.maxWidthBuilder(column.identifier);
-
-    if (column.width < minWidth) {
-      column.width = minWidth;
-    } else if (column.width > maxWidth) {
-      column.width = maxWidth;
-    }
-
-    // update the state
-    notifyListeners();
+  void updateColumn(ZooperColumnModel column) {
+    var index = state.indexWhere((element) => element.identifier == column.identifier);
+    state[index] = column;
+    state = List.from(state);
   }
 
   ZooperColumnModel getColumn(String identifier) {
-    return columns.firstWhere((element) => element.identifier == identifier);
+    return state.firstWhere((element) => element.identifier == identifier);
   }
 }

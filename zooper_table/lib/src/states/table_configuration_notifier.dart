@@ -1,15 +1,16 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zooper_table/zooper_table.dart';
 
-class TableConfigurationNotifier<TData> extends ChangeNotifier {
-  TableConfiguration<TData> _tableConfiguration;
+class TableConfigurationNotifier extends StateNotifier<TableConfiguration> {
+  TableConfigurationNotifier(TableConfiguration state) : super(state);
 
-  TableConfigurationNotifier(this._tableConfiguration);
+  TableConfiguration get currentState => state;
 
-  TableConfiguration<TData> get tableConfiguration => _tableConfiguration;
+  void updateTableConfiguration(TableConfiguration newConfiguration) {
+    state = newConfiguration;
+  }
 
-  void updateTableConfiguration(TableConfiguration<TData> tableConfiguration) {
-    _tableConfiguration = tableConfiguration;
-    notifyListeners();
+  void overrideWithValue(TableConfiguration newConfiguration) {
+    state = newConfiguration;
   }
 }

@@ -14,7 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
 
-  provider: ^6.1.1
+  flutter_riverpod: ^2.4.9
 
   zooper_table:
     path: ../zooper_table

@@ -1,0 +1,28 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "zooper_table_example",
+			"cwd": "zooper_table_example",
+			"request": "launch",
+			"type": "dart"
+		},
+		{
+			"name": "zooper_table_example (profile mode)",
+			"cwd": "zooper_table_example",
+			"request": "launch",
+			"type": "dart",
+			"flutterMode": "profile"
+		},
+		{
+			"name": "zooper_table_example (release mode)",
+			"cwd": "zooper_table_example",
+			"request": "launch",
+			"type": "dart",
+			"flutterMode": "release"
+		}
+	]
+}

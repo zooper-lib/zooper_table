@@ -1,13 +1,7 @@
-import 'package:flutter/widgets.dart';
-import 'package:zooper_table/zooper_table.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DataStateNotifier<TData> extends ChangeNotifier {
-  final TableConfiguration tableConfiguration;
+class DataStateNotifier extends StateNotifier<List<dynamic>> {
+  DataStateNotifier(List<dynamic> data) : super(data);
 
-  final List<TData> data;
-
-  DataStateNotifier(
-    this.tableConfiguration,
-    this.data,
-  );
+  List<dynamic> get currentState => state;
 }

@@ -29,7 +29,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ZooperTable<TestData>(
+        child: ZooperTable(
           tableConfiguration: TableConfiguration(
             columnHeaderConfiguration: ColumnConfiguration(
               minWidthBuilder: (identifier) => 50,
@@ -37,8 +37,8 @@ class MyHomePage extends StatelessWidget {
               canSort: (identifier) => true,
             ),
             rowConfiguration: RowConfiguration(),
-            cellConfiguration: CellConfiguration<TestData>(
-              cellValue: (TestData data, String identifier) {
+            cellConfiguration: CellConfiguration(
+              cellValue: (data, String identifier) {
                 if (identifier == 'id') return data.id;
                 if (identifier == 'name') return data.name;
                 if (identifier == 'age') return data.age.toString();

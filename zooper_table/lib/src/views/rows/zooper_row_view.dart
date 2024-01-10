@@ -1,12 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperRowView<T> extends StatelessWidget {
-  /// Configuration for this row
-  final RowConfiguration rowConfiguration;
-
-  final CellConfiguration<T> cellConfiguration;
-
   /// The columns of the table
   final List<ZooperColumnModel> columns;
 
@@ -18,8 +14,6 @@ class ZooperRowView<T> extends StatelessWidget {
 
   const ZooperRowView({
     super.key,
-    required this.rowConfiguration,
-    required this.cellConfiguration,
     required this.columns,
     required this.data,
     required this.index,
@@ -34,8 +28,8 @@ class ZooperRowView<T> extends StatelessWidget {
     );
   }
 
-  List<ZooperCellView> _buildCells() {
-    var cells = <ZooperCellView<T>>[];
+  List<Widget> _buildCells() {
+    var cells = <Widget>[];
 
     for (final column in columns) {
       final cellView = _buildCell(column);
@@ -45,14 +39,17 @@ class ZooperRowView<T> extends StatelessWidget {
     return cells;
   }
 
-  ZooperCellView<T> _buildCell(ZooperColumnModel columnModel) {
-    final height = rowConfiguration.heightBuilder(index);
+  Widget _buildCell(ZooperColumnModel columnModel) {
+    return Consumer(builder: (context, ref, child) {
+      final height = ref.watch(tableConfigurationProvider).rowConfiguration.heightBuilder(index);
+      final cellValue = ref.watch(tableConfigurationProvider).cellConfiguration.cellValue(data, columnModel.identifier);
 
-    return ZooperCellView<T>(
-      rowData: data,
-      cellValue: cellConfiguration.cellValue(data, columnModel.identifier),
-      identifier: columnModel.identifier,
-      height: height,
-    );
+      return ZooperCellView(
+        rowData: data,
+        cellValue: cellValue,
+        identifier: columnModel.identifier,
+        height: height,
+      );
+    });
   }
 }

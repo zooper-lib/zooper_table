@@ -11,9 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  riverpod: ^2.4.9
-
-  provider: ^6.1.1
+  flutter_riverpod: ^2.4.9
 
   lucide_icons: ^0.257.0
 

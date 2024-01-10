@@ -1,16 +1,16 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zooper_table/zooper_table.dart';
 
-class ZooperTable<T> extends StatefulWidget {
+class ZooperTable extends StatefulWidget {
   /// Configuration for this table.
-  final TableConfiguration<T> tableConfiguration;
+  final TableConfiguration tableConfiguration;
 
   /// The columns for this table.
   final List<ZooperColumnModel> columns;
 
   /// The data for this table.
-  final List<T> data;
+  final List<dynamic> data;
 
   const ZooperTable({
     super.key,
@@ -20,87 +20,44 @@ class ZooperTable<T> extends StatefulWidget {
   });
 
   @override
-  State<ZooperTable<T>> createState() => _ZooperTableState();
+  State<ZooperTable> createState() => _ZooperTableState();
 }
 
-class _ZooperTableState<TData> extends State<ZooperTable<TData>> {
-  late final TableConfigurationNotifier<TData> tableConfigurationNotifier;
-  late final ColumnStateNotifier columnStateNotifier;
-  late final DataStateNotifier dataStateNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-
-    tableConfigurationNotifier = TableConfigurationNotifier<TData>(
-      widget.tableConfiguration,
-    );
-
-    columnStateNotifier = ColumnStateNotifier(
-      widget.tableConfiguration,
-      widget.columns,
-    );
-
-    dataStateNotifier = DataStateNotifier<TData>(
-      widget.tableConfiguration,
-      widget.data,
-    );
-  }
-
+class _ZooperTableState extends State<ZooperTable> {
   @override
   Widget build(BuildContext context) {
-    final header = _buildColumns();
-    final content = _buildContent();
-
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: tableConfigurationNotifier),
-        ChangeNotifierProvider.value(value: columnStateNotifier),
-        ChangeNotifierProvider.value(value: dataStateNotifier),
-        ProxyProvider2<TableConfigurationNotifier<TData>, ColumnStateNotifier, ColumnHelper>(
-          update: (_, tableConfigurationNotifier, columnStateNotifier, __) {
-            return ColumnHelper(
-              tableConfigurationNotifier,
-              columnStateNotifier,
-            );
-          },
-        ),
-        ProxyProvider3<ColumnStateNotifier, DataStateNotifier, TableConfigurationNotifier<TData>, RowHelper<TData>>(
-          update: (_, columnStateNotifier, dataStateNotifier, tableConfigurationNotifier, __) {
-            return RowHelper<TData>(
-              columnStateNotifier,
-              dataStateNotifier,
-              tableConfigurationNotifier,
-            );
-          },
-        ),
+    return ProviderScope(
+      overrides: [
+        tableConfigurationProvider.overrideWith((ref) => TableConfigurationNotifier(widget.tableConfiguration)),
+        columnStateProvider.overrideWith((ref) => ColumnStateNotifier(widget.columns)),
+        dataStateProvider.overrideWith((ref) => DataStateNotifier(widget.data)),
       ],
-      child: Column(
-        children: [
-          header,
-          content,
-        ],
-      ),
-    );
-  }
+      child: Consumer(builder: (context, ref, child) {
+        final columnService = ref.watch(columnServiceProvider);
+        final rowService = ref.watch(rowServiceProvider);
 
-  Widget _buildColumns() {
-    return Consumer2<ColumnStateNotifier, ColumnHelper>(
-      builder: (context, columnStateNotifier, columnHelper, child) {
-        return Row(
-          children: columnHelper.buildColumns(),
-        );
-      },
-    );
-  }
+        final columnViewList = columnService.buildColumnViewList();
+        final rowViewList = rowService.buildRowViewList();
 
-  Widget _buildContent() {
-    return Consumer<RowHelper<TData>>(
-      builder: (context, rowHelper, child) {
         return Column(
-          children: rowHelper.buildRows(),
+          children: [
+            _buildColumns(columnViewList),
+            _buildContent(rowViewList),
+          ],
         );
-      },
+      }),
+    );
+  }
+
+  Widget _buildColumns(List<ZooperColumnView> columnViews) {
+    return Row(
+      children: columnViews,
+    );
+  }
+
+  Widget _buildContent(List<ZooperRowView> rowViews) {
+    return Column(
+      children: rowViews,
     );
   }
 }

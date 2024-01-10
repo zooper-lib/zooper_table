@@ -1,4 +1,4 @@
-class RowConfiguration<TData> {
+class RowConfiguration {
   final double? Function(int index) heightBuilder;
 
   /// The height of each row.
@@ -10,7 +10,7 @@ class RowConfiguration<TData> {
   ///
   /// The callback will be called with the data of the row that was tapped.
   /// You can override this callback for each [BasicRow]
-  final Future<void> Function(TData data)? onRowTap;
+  final Future<void> Function(dynamic data)? onRowTap;
 
   RowConfiguration({
     double Function(int index)? heightBuilder,

@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zooper_table/zooper_table.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class ZooperColumnView extends StatelessWidget {
-  /// Configuration for this [ZooperColumnView].
-  final ColumnConfiguration columnConfiguration;
-
-  /// The model for this column.
-  final ZooperColumnModel model;
-
-  /// Callback for how to generate the width for this column.
-  final double Function()? widthBuilder;
+  final String identifier;
 
   const ZooperColumnView({
     super.key,
-    required this.columnConfiguration,
-    required this.model,
-    this.widthBuilder,
+    required this.identifier,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ColumnStateNotifier>(
-      builder: (context, value, child) {
-        final column = value.getColumn(model.identifier);
+    return Consumer(
+      builder: (context, ref, child) {
+        final columnConfiguration = ref.watch(tableConfigurationProvider).columnHeaderConfiguration;
+        final columnStateNotifier = ref.watch(columnStateProvider.notifier);
 
-        final double minWidth = columnConfiguration.minWidthBuilder(column.identifier);
-        final double maxWidth = columnConfiguration.maxWidthBuilder(column.identifier);
+        var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+
+        final double minWidth = columnConfiguration.minWidthBuilder(identifier);
+        final double maxWidth = columnConfiguration.maxWidthBuilder(identifier);
 
         return ConstrainedBox(
           constraints: BoxConstraints(
@@ -35,13 +29,13 @@ class ZooperColumnView extends StatelessWidget {
             maxWidth: maxWidth,
           ),
           child: SizedBox(
-            width: column.width,
+            width: columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier).width,
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    model.title,
+                    column.title,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -56,17 +50,23 @@ class ZooperColumnView extends StatelessWidget {
   }
 
   Widget _resizeIcon(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.resizeColumn,
-      child: GestureDetector(
-        onTap: () {},
-        onHorizontalDragUpdate: (details) =>
-            Provider.of<ColumnStateNotifier>(context, listen: false).updateColumnWidth(model, details.delta.dx),
-        child: const Icon(
-          LucideIcons.gripVertical,
-          size: 16,
-        ),
-      ),
+    return Consumer(
+      builder: (context, ref, child) {
+        var columnService = ref.watch(columnServiceProvider);
+        var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+
+        return MouseRegion(
+          cursor: SystemMouseCursors.resizeColumn,
+          child: GestureDetector(
+            onTap: () {},
+            onHorizontalDragUpdate: (details) => columnService.updateColumnWidth(column, details.delta.dx),
+            child: const Icon(
+              LucideIcons.gripVertical,
+              size: 16,
+            ),
+          ),
+        );
+      },
     );
   }
 }
