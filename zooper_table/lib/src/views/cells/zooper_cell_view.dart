@@ -26,13 +26,17 @@ class ZooperCellView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
-        var tableConfigurationNotifier = ref.watch(tableConfigurationProvider);
+        final column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+        final columnIndex = ref.watch(columnStateProvider).indexWhere((element) => element.identifier == identifier);
+        final tableConfigurationNotifier = ref.watch(tableConfigurationProvider);
 
         return Container(
           width: column.width,
           height: height,
-          padding: tableConfigurationNotifier.cellConfiguration.paddingBuilder(rowData, identifier, 0),
+          padding: tableConfigurationNotifier.cellConfiguration.paddingBuilder(rowData, identifier, columnIndex),
+          decoration: BoxDecoration(
+            border: tableConfigurationNotifier.cellConfiguration.borderBuilder(rowData, identifier, columnIndex),
+          ),
           child: Text(
             cellValue,
             overflow: TextOverflow.ellipsis,

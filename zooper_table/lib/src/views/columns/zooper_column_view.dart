@@ -19,6 +19,7 @@ class ZooperColumnView extends StatelessWidget {
         final columnStateNotifier = ref.watch(columnStateProvider.notifier);
 
         var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+        var columnIndex = ref.watch(columnStateProvider).indexWhere((element) => element.identifier == identifier);
 
         final double minWidth = columnConfiguration.minWidthBuilder(identifier);
         final double maxWidth = columnConfiguration.maxWidthBuilder(identifier);
@@ -28,8 +29,12 @@ class ZooperColumnView extends StatelessWidget {
             minWidth: minWidth,
             maxWidth: maxWidth,
           ),
-          child: SizedBox(
+          child: Container(
             width: columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier).width,
+            padding: columnConfiguration.paddingBuilder(identifier),
+            decoration: BoxDecoration(
+              border: columnConfiguration.borderBuilder(identifier, columnIndex),
+            ),
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
