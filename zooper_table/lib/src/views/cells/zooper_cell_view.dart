@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperCellView extends StatelessWidget {
@@ -26,18 +26,19 @@ class ZooperCellView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
-        final columnIndex = ref.watch(columnStateProvider).indexWhere((element) => element.identifier == identifier);
-        final tableConfigurationNotifier = ref.watch(tableConfigurationProvider);
+    return Consumer2<TableConfigurationNotifier, ColumnStateNotifier>(
+      builder: (context, tableConfigurationNotifier, columnStateProvider, child) {
+        final columnIndex = columnStateProvider.currentState.indexWhere((element) => element.identifier == identifier);
+        final column = columnStateProvider.currentState.firstWhere((element) => element.identifier == identifier);
 
         return Container(
           width: column.width,
           height: height,
-          padding: tableConfigurationNotifier.cellConfiguration.paddingBuilder(rowData, identifier, columnIndex),
+          padding: tableConfigurationNotifier.currentState.cellConfiguration
+              .paddingBuilder(rowData, identifier, columnIndex),
           decoration: BoxDecoration(
-            border: tableConfigurationNotifier.cellConfiguration.borderBuilder(rowData, identifier, columnIndex),
+            border: tableConfigurationNotifier.currentState.cellConfiguration
+                .borderBuilder(rowData, identifier, columnIndex),
           ),
           child: Text(
             cellValue,

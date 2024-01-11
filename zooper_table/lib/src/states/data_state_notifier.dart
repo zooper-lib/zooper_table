@@ -1,11 +1,14 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 
-class DataStateNotifier extends StateNotifier<List<dynamic>> {
-  DataStateNotifier(List<dynamic> data) : super(data);
+class DataStateNotifier extends ChangeNotifier {
+  List<dynamic> _state;
 
-  List<dynamic> get currentState => state;
+  DataStateNotifier(this._state);
+
+  List<dynamic> get currentState => _state;
 
   void updateAllData(List<dynamic> data) {
-    state = data;
+    _state = data;
+    notifyListeners();
   }
 }
