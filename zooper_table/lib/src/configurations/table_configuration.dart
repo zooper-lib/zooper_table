@@ -15,10 +15,10 @@ class TableConfiguration {
 
   TableConfiguration({
     required this.valueGetter,
-    ColumnConfiguration? columnHeaderConfiguration,
+    ColumnConfiguration? columnConfiguration,
     RowConfiguration? rowConfiguration,
     CellConfiguration? cellConfiguration,
-  })  : columnConfiguration = columnHeaderConfiguration ?? ColumnConfiguration(),
+  })  : columnConfiguration = columnConfiguration ?? ColumnConfiguration(),
         rowConfiguration = rowConfiguration ?? RowConfiguration(),
         cellConfiguration = cellConfiguration ?? CellConfiguration();
 }
