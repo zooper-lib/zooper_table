@@ -41,8 +41,7 @@ class ZooperRowView<T> extends StatelessWidget {
   Widget _buildCell(ZooperColumnModel columnModel) {
     return Consumer(builder: (context, ref, child) {
       final height = ref.watch(tableConfigurationProvider).rowConfiguration.heightBuilder(index);
-      final cellValue =
-          ref.watch(tableConfigurationProvider).cellConfiguration.cellValueBuilder(data, columnModel.identifier);
+      final cellValue = ref.watch(tableConfigurationProvider).valueGetter(data, columnModel.identifier);
 
       return ZooperCellView(
         rowData: data,

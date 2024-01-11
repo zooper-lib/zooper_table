@@ -4,4 +4,8 @@ class DataStateNotifier extends StateNotifier<List<dynamic>> {
   DataStateNotifier(List<dynamic> data) : super(data);
 
   List<dynamic> get currentState => state;
+
+  void updateAllData(List<dynamic> data) {
+    state = data;
+  }
 }

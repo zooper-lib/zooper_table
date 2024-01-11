@@ -10,7 +10,11 @@ class TableConfiguration {
   /// Configuration for the cells of this table.
   final CellConfiguration cellConfiguration;
 
+  /// The function that will be used to get the value of a cell.
+  final dynamic Function(dynamic data, String identifier) valueGetter;
+
   TableConfiguration({
+    required this.valueGetter,
     ColumnConfiguration? columnHeaderConfiguration,
     RowConfiguration? rowConfiguration,
     CellConfiguration? cellConfiguration,
