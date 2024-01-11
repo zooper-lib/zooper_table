@@ -6,7 +6,9 @@ final columnStateProvider = StateNotifierProvider<ColumnStateNotifier, List<Zoop
 });
 
 final tableConfigurationProvider = StateNotifierProvider<TableConfigurationNotifier, TableConfiguration>((ref) {
-  return TableConfigurationNotifier(TableConfiguration());
+  return TableConfigurationNotifier(TableConfiguration(
+    valueGetter: (data, identifier) => '',
+  ));
 });
 
 final dataStateProvider = StateNotifierProvider<DataStateNotifier, dynamic>((ref) {
@@ -17,6 +19,7 @@ final columnServiceProvider = Provider<ColumnService>((ref) {
   return ColumnService(
     tableConfigNotifier: ref.watch(tableConfigurationProvider.notifier),
     columnStateNotifier: ref.watch(columnStateProvider.notifier),
+    dataStateNotifier: ref.watch(dataStateProvider.notifier),
   );
 });
 

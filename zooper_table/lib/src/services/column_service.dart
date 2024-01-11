@@ -3,10 +3,12 @@ import 'package:zooper_table/zooper_table.dart';
 class ColumnService {
   final TableConfigurationNotifier tableConfigNotifier;
   final ColumnStateNotifier columnStateNotifier;
+  final DataStateNotifier dataStateNotifier;
 
   ColumnService({
     required this.tableConfigNotifier,
     required this.columnStateNotifier,
+    required this.dataStateNotifier,
   });
 
   void updateColumnWidth(ZooperColumnModel model, double delta) {
@@ -45,6 +47,18 @@ class ColumnService {
 
     // Update all columns
     columnStateNotifier.updateAllColumns(updatedColumns);
+
+    // Sort the rows based on the sorted columns
+    List<dynamic> updatedRows = dataStateNotifier.currentState;
+    updatedRows.sort((a, b) {
+      var valueA = tableConfigNotifier.currentState.valueGetter(a, identifier);
+      var valueB = tableConfigNotifier.currentState.valueGetter(b, identifier);
+      var compare = valueA.compareTo(valueB);
+      return newSortOrder == SortOrder.ascending ? compare : -compare;
+    });
+
+    // Update all rows
+    dataStateNotifier.updateAllData(updatedRows);
   }
 
   List<ZooperColumnView> buildColumnViewList() {

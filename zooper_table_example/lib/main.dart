@@ -32,20 +32,19 @@ class MyHomePage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: ZooperTable(
           tableConfiguration: TableConfiguration(
+            valueGetter: (data, identifier) {
+              if (identifier == 'id') return data.id;
+              if (identifier == 'name') return data.name;
+              if (identifier == 'age') return data.age.toString();
+              if (identifier == 'height') return data.height.toString();
+              return '';
+            },
             columnHeaderConfiguration: ColumnConfiguration(
               maxWidthBuilder: (identifier) => (identifier == 'id') ? 50 : 500,
               canResizeBuilder: (identifier) => (identifier == 'id') ? false : true,
             ),
             rowConfiguration: RowConfiguration(),
-            cellConfiguration: CellConfiguration(
-              cellValueBuilder: (data, String identifier) {
-                if (identifier == 'id') return data.id;
-                if (identifier == 'name') return data.name;
-                if (identifier == 'age') return data.age.toString();
-                if (identifier == 'height') return data.height.toString();
-                return '';
-              },
-            ),
+            cellConfiguration: CellConfiguration(),
           ),
           columns: [
             ZooperColumnModel(identifier: 'id', title: 'ID', order: 0, width: 50),

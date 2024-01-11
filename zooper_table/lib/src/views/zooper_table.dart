@@ -35,6 +35,7 @@ class _ZooperTableState extends State<ZooperTable> {
       child: Consumer(builder: (context, ref, child) {
         final columnService = ref.watch(columnServiceProvider);
         final rowService = ref.watch(rowServiceProvider);
+        final dataStateNotifier = ref.watch(dataStateProvider.notifier);
 
         final columnViewList = columnService.buildColumnViewList();
         final rowViewList = rowService.buildRowViewList();
