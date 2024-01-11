@@ -33,9 +33,8 @@ class MyHomePage extends StatelessWidget {
         child: ZooperTable(
           tableConfiguration: TableConfiguration(
             columnHeaderConfiguration: ColumnConfiguration(
-              minWidthBuilder: (identifier) => 50,
-              maxWidthBuilder: (identifier) => 200,
-              canSort: (identifier) => true,
+              maxWidthBuilder: (identifier) => (identifier == 'id') ? 50 : 500,
+              canResizeBuilder: (identifier) => (identifier == 'id') ? false : true,
             ),
             rowConfiguration: RowConfiguration(),
             cellConfiguration: CellConfiguration(
@@ -49,7 +48,7 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
           columns: [
-            ZooperColumnModel(identifier: 'id', title: 'ID', order: 0),
+            ZooperColumnModel(identifier: 'id', title: 'ID', order: 0, width: 50),
             ZooperColumnModel(identifier: 'name', title: 'Name', order: 1),
             ZooperColumnModel(identifier: 'age', title: 'Age', order: 2),
             ZooperColumnModel(identifier: 'height', title: 'Height', order: 3),

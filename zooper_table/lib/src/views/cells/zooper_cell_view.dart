@@ -12,15 +12,17 @@ class ZooperCellView extends StatelessWidget {
   /// The identifier of the column
   final String identifier;
 
+  final int index;
+
   final double? height;
 
-  const ZooperCellView({
-    Key? key,
+  ZooperCellView({
     required this.rowData,
     required this.cellValue,
     required this.identifier,
+    required this.index,
     required this.height,
-  }) : super(key: key);
+  }) : super(key: ValueKey('cell:$identifier:$index'));
 
   @override
   Widget build(BuildContext context) {

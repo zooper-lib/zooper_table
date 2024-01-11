@@ -12,12 +12,11 @@ class ZooperRowView<T> extends StatelessWidget {
   /// The index of this row inside the Table
   final int index;
 
-  const ZooperRowView({
-    super.key,
+  ZooperRowView({
     required this.columns,
     required this.data,
     required this.index,
-  });
+  }) : super(key: ValueKey('row:$index'));
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +30,8 @@ class ZooperRowView<T> extends StatelessWidget {
   List<Widget> _buildCells() {
     var cells = <Widget>[];
 
-    for (final column in columns) {
-      final cellView = _buildCell(column);
+    for (var index = 0; index < columns.length; index++) {
+      final cellView = _buildCell(columns[index]);
       cells.add(cellView);
     }
 
@@ -49,6 +48,7 @@ class ZooperRowView<T> extends StatelessWidget {
         rowData: data,
         cellValue: cellValue,
         identifier: columnModel.identifier,
+        index: index,
         height: height,
       );
     });

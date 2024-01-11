@@ -6,10 +6,9 @@ import 'package:lucide_icons/lucide_icons.dart';
 class ZooperColumnView extends StatelessWidget {
   final String identifier;
 
-  const ZooperColumnView({
-    super.key,
+  ZooperColumnView({
     required this.identifier,
-  });
+  }) : super(key: ValueKey('column:$identifier'));
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,6 @@ class ZooperColumnView extends StatelessWidget {
         final columnConfiguration = ref.watch(tableConfigurationProvider).columnHeaderConfiguration;
         final columnStateNotifier = ref.watch(columnStateProvider.notifier);
 
-        var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
         var columnIndex = ref.watch(columnStateProvider).indexWhere((element) => element.identifier == identifier);
 
         final double minWidth = columnConfiguration.minWidthBuilder(identifier);
@@ -38,13 +36,8 @@ class ZooperColumnView extends StatelessWidget {
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    column.title,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                //const SizedBox.expand(),
+                _title(context),
+                _sortIcon(context),
                 _resizeIcon(context),
               ],
             ),
@@ -54,11 +47,62 @@ class ZooperColumnView extends StatelessWidget {
     );
   }
 
-  Widget _resizeIcon(BuildContext context) {
+  Widget _title(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         var columnService = ref.watch(columnServiceProvider);
         var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => columnService.sortColumn(column.identifier),
+            child: Text(
+              column.title,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _sortIcon(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final columnConfiguration = ref.watch(tableConfigurationProvider).columnHeaderConfiguration;
+        final columnService = ref.watch(columnServiceProvider);
+        final columnStateNotifier = ref.watch(columnStateProvider.notifier);
+        final column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
+
+        if (columnConfiguration.canSortBuilder(identifier) == false) {
+          return const SizedBox.shrink();
+        }
+
+        return MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () => columnService.sortColumn(column.identifier),
+            child: column.sortOrder == SortOrder.none
+                ? const SizedBox.shrink()
+                : column.sortOrder == SortOrder.descending
+                    ? columnConfiguration.sortDescendingIconBuilder(identifier)
+                    : columnConfiguration.sortAscendingIconBuilder(identifier),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _resizeIcon(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final columnConfiguration = ref.watch(tableConfigurationProvider).columnHeaderConfiguration;
+        var columnService = ref.watch(columnServiceProvider);
+        var column = ref.watch(columnStateProvider).firstWhere((element) => element.identifier == identifier);
+
+        if (columnConfiguration.canResizeBuilder(identifier) == false) {
+          return const SizedBox.shrink();
+        }
 
         return MouseRegion(
           cursor: SystemMouseCursors.resizeColumn,

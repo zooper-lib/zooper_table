@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class ColumnConfiguration {
+  /// Callback to get whether the column can be resized.
+  ///
+  /// This function is called with one argument:
+  /// - [identifier]: A string that identifies the column.
+  ///
+  /// If this function is not provided, a default function is used.
+  final bool Function(String identifier) canResizeBuilder;
+
   /// Callback to get the minimum width of the column.
   ///
   /// This function is called with one argument:
@@ -42,17 +51,42 @@ class ColumnConfiguration {
   /// If this function is not provided, a default function is used.
   final Border Function(String identifier, int index) borderBuilder;
 
+  /// A function that returns the icon for ascending sort.
+  ///
+  /// This function is called with one argument:
+  /// - [identifier]: A string that identifies the column.
+  ///
+  /// If this function is not provided, a default function is used.
+  final Widget Function(String identifier) sortAscendingIconBuilder;
+
+  /// A function that returns the icon for descending sort.
+  ///
+  /// This function is called with one argument:
+  /// - [identifier]: A string that identifies the column.
+  ///
+  /// If this function is not provided, a default function is used.
+  final Widget Function(String identifier) sortDescendingIconBuilder;
+
   ColumnConfiguration({
+    bool Function(String identifier)? canResizeBuilder,
     double Function(String identifier)? minWidthBuilder,
     double Function(String identifier)? maxWidthBuilder,
     bool Function(String identifier)? canSort,
     EdgeInsets Function(String identifier)? paddingBuilder,
     Border Function(String identifier, int index)? borderBuilder,
-  })  : minWidthBuilder = minWidthBuilder ?? _defaultMinWidthBuilder,
+  })  : canResizeBuilder = canResizeBuilder ?? _defaultCanResizeBuilder,
+        minWidthBuilder = minWidthBuilder ?? _defaultMinWidthBuilder,
         maxWidthBuilder = maxWidthBuilder ?? _defaultMaxWidthBuilder,
         canSortBuilder = canSort ?? _defaultCanSortBuilder,
         paddingBuilder = paddingBuilder ?? _defaultPaddingBuilder,
-        borderBuilder = borderBuilder ?? _defaultBorderBuilder;
+        borderBuilder = borderBuilder ?? _defaultBorderBuilder,
+        sortAscendingIconBuilder = _defaultSortAscendingIconBuilder,
+        sortDescendingIconBuilder = _defaultSortDescendingIconBuilder;
+
+  // Default canResize builder
+  static bool _defaultCanResizeBuilder(String identifier) {
+    return true;
+  }
 
   // Default minWidth builder
   static double _defaultMinWidthBuilder(String identifier) {
@@ -61,7 +95,7 @@ class ColumnConfiguration {
 
   // Default maxWidth builder
   static double _defaultMaxWidthBuilder(String identifier) {
-    return 200.0;
+    return 500.0;
   }
 
   // Default maxWidth builder
@@ -90,5 +124,13 @@ class ColumnConfiguration {
         width: 1,
       ),
     );
+  }
+
+  static Widget _defaultSortAscendingIconBuilder(String identifier) {
+    return const Icon(LucideIcons.arrowUpAZ, size: 16);
+  }
+
+  static Widget _defaultSortDescendingIconBuilder(String identifier) {
+    return const Icon(LucideIcons.arrowDownAZ, size: 16);
   }
 }

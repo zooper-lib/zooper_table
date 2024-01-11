@@ -15,9 +15,36 @@ class ColumnService {
     final double maxWidth =
         tableConfigNotifier.currentState.columnHeaderConfiguration.maxWidthBuilder(model.identifier);
 
-    model.width = (model.width + delta).clamp(minWidth, maxWidth);
+    var updatedModel = model.copyWith(width: (model.width + delta).clamp(minWidth, maxWidth));
 
-    columnStateNotifier.updateColumn(model);
+    columnStateNotifier.updateColumn(updatedModel);
+  }
+
+  void sortColumn(String identifier) {
+    // Check if the column can be sorted
+    if (!tableConfigNotifier.currentState.columnHeaderConfiguration.canSortBuilder(identifier)) {
+      return;
+    }
+
+    // Get all columns and set their sort order to null
+    List<ZooperColumnModel> updatedColumns = [];
+    SortOrder? newSortOrder;
+
+    for (var column in columnStateNotifier.currentState) {
+      if (column.identifier == identifier) {
+        newSortOrder = column.sortOrder == SortOrder.none
+            ? SortOrder.descending
+            : column.sortOrder == SortOrder.descending
+                ? SortOrder.ascending
+                : SortOrder.none;
+        updatedColumns.add(column.copyWith(sortOrder: newSortOrder));
+      } else {
+        updatedColumns.add(column.copyWith(sortOrder: SortOrder.none));
+      }
+    }
+
+    // Update all columns
+    columnStateNotifier.updateAllColumns(updatedColumns);
   }
 
   List<ZooperColumnView> buildColumnViewList() {

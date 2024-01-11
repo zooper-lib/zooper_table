@@ -12,6 +12,10 @@ class ColumnStateNotifier extends StateNotifier<List<ZooperColumnModel>> {
     state = List.from(state);
   }
 
+  void updateAllColumns(List<ZooperColumnModel> columns) {
+    state = columns;
+  }
+
   ZooperColumnModel getColumn(String identifier) {
     return state.firstWhere((element) => element.identifier == identifier);
   }
