@@ -15,9 +15,10 @@ class ColumnService {
     final double minWidth = tableConfigNotifier.currentState.columnConfiguration.minWidthBuilder(model.identifier);
     final double maxWidth = tableConfigNotifier.currentState.columnConfiguration.maxWidthBuilder(model.identifier);
 
-    var updatedModel = model.copyWith(width: (model.width + delta).clamp(minWidth, maxWidth));
+    //var updatedModel = model.copyWith(width: (model.width + delta).clamp(minWidth, maxWidth));
+    model.width = (model.width + delta).clamp(minWidth, maxWidth);
 
-    columnStateNotifier.updateColumn(updatedModel);
+    columnStateNotifier.updateColumn(model);
   }
 
   void sortColumn(String identifier) {

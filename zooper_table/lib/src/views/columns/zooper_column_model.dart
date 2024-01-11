@@ -3,9 +3,9 @@ import 'package:zooper_table/zooper_table.dart';
 class ZooperColumnModel {
   final String identifier;
   final String title;
-  final int order;
-  final double width;
-  final SortOrder sortOrder;
+  int order;
+  double width;
+  SortOrder sortOrder;
 
   ZooperColumnModel({
     required this.identifier,

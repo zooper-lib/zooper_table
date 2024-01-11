@@ -39,9 +39,10 @@ class MyHomePage extends StatelessWidget {
               if (identifier == 'height') return data.height.toString();
               return '';
             },
-            columnHeaderConfiguration: ColumnConfiguration(
+            columnConfiguration: ColumnConfiguration(
               maxWidthBuilder: (identifier) => (identifier == 'id') ? 50 : 500,
               canResizeBuilder: (identifier) => (identifier == 'id') ? false : true,
+              canSortBuilder: (identifier) => (identifier == 'age') ? false : true,
             ),
             rowConfiguration: RowConfiguration(),
             cellConfiguration: CellConfiguration(),
