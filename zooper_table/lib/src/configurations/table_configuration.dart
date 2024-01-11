@@ -2,7 +2,7 @@ import 'package:zooper_table/zooper_table.dart';
 
 class TableConfiguration {
   /// Configuration for the column headers of this table.
-  final ColumnConfiguration columnHeaderConfiguration;
+  final ColumnConfiguration columnConfiguration;
 
   /// Configuration for the rows of this table.
   final RowConfiguration rowConfiguration;
@@ -18,7 +18,7 @@ class TableConfiguration {
     ColumnConfiguration? columnHeaderConfiguration,
     RowConfiguration? rowConfiguration,
     CellConfiguration? cellConfiguration,
-  })  : columnHeaderConfiguration = columnHeaderConfiguration ?? ColumnConfiguration(),
+  })  : columnConfiguration = columnHeaderConfiguration ?? ColumnConfiguration(),
         rowConfiguration = rowConfiguration ?? RowConfiguration(),
         cellConfiguration = cellConfiguration ?? CellConfiguration();
 }

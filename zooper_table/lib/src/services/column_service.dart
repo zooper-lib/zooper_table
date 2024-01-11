@@ -12,10 +12,8 @@ class ColumnService {
   });
 
   void updateColumnWidth(ZooperColumnModel model, double delta) {
-    final double minWidth =
-        tableConfigNotifier.currentState.columnHeaderConfiguration.minWidthBuilder(model.identifier);
-    final double maxWidth =
-        tableConfigNotifier.currentState.columnHeaderConfiguration.maxWidthBuilder(model.identifier);
+    final double minWidth = tableConfigNotifier.currentState.columnConfiguration.minWidthBuilder(model.identifier);
+    final double maxWidth = tableConfigNotifier.currentState.columnConfiguration.maxWidthBuilder(model.identifier);
 
     var updatedModel = model.copyWith(width: (model.width + delta).clamp(minWidth, maxWidth));
 
@@ -24,7 +22,7 @@ class ColumnService {
 
   void sortColumn(String identifier) {
     // Check if the column can be sorted
-    if (!tableConfigNotifier.currentState.columnHeaderConfiguration.canSortBuilder(identifier)) {
+    if (!tableConfigNotifier.currentState.columnConfiguration.canSortBuilder(identifier)) {
       return;
     }
 
@@ -67,7 +65,7 @@ class ColumnService {
     for (final column in columnStateNotifier.currentState) {
       final columnHeaderItemView = buildColumnItem(
         column,
-        tableConfigNotifier.currentState.columnHeaderConfiguration,
+        tableConfigNotifier.currentState.columnConfiguration,
       );
       columnHeaderItems.add(columnHeaderItemView);
     }

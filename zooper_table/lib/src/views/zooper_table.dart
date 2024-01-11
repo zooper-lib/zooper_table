@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperTable extends StatefulWidget {
@@ -26,17 +26,34 @@ class ZooperTable extends StatefulWidget {
 class _ZooperTableState extends State<ZooperTable> {
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      overrides: [
-        tableConfigurationProvider.overrideWith((ref) => TableConfigurationNotifier(widget.tableConfiguration)),
-        columnStateProvider.overrideWith((ref) => ColumnStateNotifier(widget.columns)),
-        dataStateProvider.overrideWith((ref) => DataStateNotifier(widget.data)),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TableConfigurationNotifier>(
+          create: (_) => TableConfigurationNotifier(widget.tableConfiguration),
+        ),
+        ChangeNotifierProvider<ColumnStateNotifier>(
+          create: (_) => ColumnStateNotifier(widget.columns),
+        ),
+        ChangeNotifierProvider<DataStateNotifier>(
+          create: (_) => DataStateNotifier(widget.data),
+        ),
+        Provider<ColumnService>(
+          create: (context) => ColumnService(
+            tableConfigNotifier: context.read(),
+            columnStateNotifier: context.read(),
+            dataStateNotifier: context.read(),
+          ),
+        ),
+        Provider<RowService>(
+          create: (context) => RowService(
+            tableConfigNotifier: context.read(),
+            dataStateNotifier: context.read(),
+            columnStateNotifier: context.read(),
+          ),
+        )
       ],
-      child: Consumer(builder: (context, ref, child) {
-        final columnService = ref.watch(columnServiceProvider);
-        final rowService = ref.watch(rowServiceProvider);
-        final dataStateNotifier = ref.watch(dataStateProvider.notifier);
-
+      child: Consumer3<ColumnService, RowService, DataStateNotifier>(
+          builder: (context, columnService, rowService, dataStateNotifier, child) {
         final columnViewList = columnService.buildColumnViewList();
         final rowViewList = rowService.buildRowViewList();
 

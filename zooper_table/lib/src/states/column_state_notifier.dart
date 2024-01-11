@@ -1,22 +1,25 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:zooper_table/zooper_table.dart';
 
-class ColumnStateNotifier extends StateNotifier<List<ZooperColumnModel>> {
-  ColumnStateNotifier(List<ZooperColumnModel> columns) : super(columns);
+class ColumnStateNotifier extends ChangeNotifier {
+  List<ZooperColumnModel> _state;
 
-  List<ZooperColumnModel> get currentState => state;
+  ColumnStateNotifier(this._state);
+
+  List<ZooperColumnModel> get currentState => _state;
 
   void updateColumn(ZooperColumnModel column) {
-    var index = state.indexWhere((element) => element.identifier == column.identifier);
-    state[index] = column;
-    state = List.from(state);
+    var index = _state.indexWhere((element) => element.identifier == column.identifier);
+    _state[index] = column;
+    notifyListeners();
   }
 
   void updateAllColumns(List<ZooperColumnModel> columns) {
-    state = columns;
+    _state = columns;
+    notifyListeners();
   }
 
   ZooperColumnModel getColumn(String identifier) {
-    return state.firstWhere((element) => element.identifier == identifier);
+    return _state.firstWhere((element) => element.identifier == identifier);
   }
 }
