@@ -5,7 +5,7 @@ class RowConfiguration {
 
   final double? Function(String identifier, int index) heightBuilder;
 
-  final void Function(ZooperRowModel row)? onRowTap;
+  final void Function(RowData row)? onRowTap;
 
   final bool Function() isReorderingEnabledBuilder;
 

@@ -52,7 +52,7 @@ class ColumnService {
 
     tableState.updateState(tableStateSnapshot);
 
-    // Sort the rows
-    rowService.sortRows();
+    // Update the rows
+    rowService.setNeedsUpdate();
   }
 }

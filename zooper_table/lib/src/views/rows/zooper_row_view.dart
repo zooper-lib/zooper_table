@@ -4,7 +4,7 @@ import 'package:zooper_table/zooper_table.dart';
 
 class ZooperRowView<T> extends StatelessWidget {
   /// The data for this row
-  final ZooperRowModel row;
+  final RowData row;
 
   /// The index of this row inside the Table
   final int rowIndex;
@@ -31,7 +31,7 @@ class ZooperRowView<T> extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildCells(TableConfiguration tableConfiguration, List<ZooperColumnModel> columns) {
+  List<Widget> _buildCells(TableConfiguration tableConfiguration, List<ColumnData> columns) {
     var cells = <Widget>[];
 
     for (var index = 0; index < columns.length; index++) {
@@ -43,7 +43,7 @@ class ZooperRowView<T> extends StatelessWidget {
   }
 
   // TODO: The parameters probably need to change when ordering columns will be implemented
-  Widget _buildCell(TableConfiguration tableConfiguration, ZooperColumnModel columnModel, int columnIndex) {
+  Widget _buildCell(TableConfiguration tableConfiguration, ColumnData columnModel, int columnIndex) {
     return Consumer3<TableState, ColumnService, RowService>(
       builder: (context, tableState, columnService, rowService, child) {
         final width = columnService.getColumnWidth(columnModel.identifier);

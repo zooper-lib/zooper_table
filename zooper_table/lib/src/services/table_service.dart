@@ -5,7 +5,7 @@ class TableService {
     TableConfiguration tableConfiguration,
     TableData? initialTableData,
     List<String> initialColumnOrder,
-    List<ZooperColumnModel> columns,
+    List<ColumnData> columns,
     ColumnSort? primaryColumnSort,
     ColumnSort? secondaryColumnSort,
   ) {
@@ -26,7 +26,7 @@ class TableService {
     return tableData;
   }
 
-  static List<String> _createColumnOrder(List<String> initialColumnOrder, List<ZooperColumnModel> columns) {
+  static List<String> _createColumnOrder(List<String> initialColumnOrder, List<ColumnData> columns) {
     // Create the column order based on the initial order and the columns that are not in the initial order.
     // The List is created like this:
     // 1. Add all columns that are in the initial order
@@ -42,7 +42,7 @@ class TableService {
   static List<String> _reinitializeTableData(
     List<String> existingColumnOrder,
     List<String> initialColumnOrder,
-    List<ZooperColumnModel> columns,
+    List<ColumnData> columns,
   ) {
     // Get all column identifiers which are new
     final newColumnIdentifiers = initialColumnOrder.where((identifier) => !existingColumnOrder.contains(identifier));
@@ -58,7 +58,7 @@ class TableService {
   }
 
   static Map<String, double> _initializeColumnWidths(
-      TableConfiguration tableConfiguration, TableData? initialTableData, List<ZooperColumnModel> columns) {
+      TableConfiguration tableConfiguration, TableData? initialTableData, List<ColumnData> columns) {
     final Map<String, double> columnWidths = {};
 
     // Add the widths based on the initial table data
@@ -78,32 +78,4 @@ class TableService {
   }
 
   void sortColumn(String identifier) {}
-
-  /* void reorderRow(int oldIndex, int newIndex) {
-    var rowSnapshot = rowStateNotifier.currentState;
-
-    // Find the row being moved.
-    final movedRow = rowSnapshot.firstWhere((row) => row.order == oldIndex);
-
-    // Update the order of the moved row.
-    movedRow.order = newIndex;
-
-    // Adjust the order of other rows.
-    if (oldIndex < newIndex) {
-      for (final row in rowSnapshot) {
-        if (row.order > oldIndex && row.order <= newIndex) {
-          row.order--;
-        }
-      }
-    } else {
-      for (final row in rowSnapshot) {
-        if (row.order < oldIndex && row.order >= newIndex) {
-          row.order++;
-        }
-      }
-    }
-
-    // Update all rows
-    rowStateNotifier.updateRowList(rowSnapshot);
-  } */
 }
