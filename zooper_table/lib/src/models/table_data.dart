@@ -10,9 +10,13 @@ class TableData {
   /// The identifier of the column which is secondarly sorted
   ColumnSort? secondaryColumnSort;
 
+  /// The width of the columns
+  Map<String, double> columnWidths;
+
   TableData({
     required this.columnOrder,
-    this.primaryColumnSort,
-    this.secondaryColumnSort,
+    required this.primaryColumnSort,
+    required this.secondaryColumnSort,
+    required this.columnWidths,
   });
 }

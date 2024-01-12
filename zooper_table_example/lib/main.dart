@@ -46,13 +46,13 @@ class MyHomePage extends StatelessWidget {
           cellConfiguration: CellConfiguration(),
         ),
         columns: [
-          ZooperColumnModel(identifier: 'id', title: 'ID', order: 0, width: 50),
-          ZooperColumnModel(identifier: 'name', title: 'Name', order: 1),
-          ZooperColumnModel(identifier: 'age', title: 'Age', order: 2),
-          ZooperColumnModel(identifier: 'height', title: 'Height', order: 3),
+          ZooperColumnModel(identifier: 'id', title: 'ID'),
+          ZooperColumnModel(identifier: 'name', title: 'Name'),
+          ZooperColumnModel(identifier: 'age', title: 'Age'),
+          ZooperColumnModel(identifier: 'height', title: 'Height'),
         ],
         data: List.generate(
-          1000,
+          3,
           (index) => TestData(
             id: '$index',
             name: 'Test $index with some more text than usual',

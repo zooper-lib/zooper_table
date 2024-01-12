@@ -4,33 +4,56 @@ class RowService {
   final TableConfigurationNotifier tableConfigNotifier;
   final DataStateNotifier dataStateNotifier;
   final ColumnStateNotifier columnStateNotifier;
-  final RowStateNotifier rowStateNotifier;
+  final RowState rowStateNotifier;
+
+  final TableState tableState;
 
   RowService({
     required this.tableConfigNotifier,
     required this.dataStateNotifier,
     required this.columnStateNotifier,
     required this.rowStateNotifier,
+    required this.tableState,
   });
 
-  List<ZooperRowView> buildRowViewList() {
-    var rows = <ZooperRowView>[];
-
-    // This should be be sorted rows
-    for (int i = 0; i < rowStateNotifier.currentState.length; i++) {
-      final row = _buildRowView(rowStateNotifier.currentState[i], i);
-      rows.add(row);
-    }
-
-    return rows;
+  double? getRowHeight(String rowIdentifier, int index) {
+    return tableConfigNotifier.currentState.rowConfiguration.heightBuilder.call(rowIdentifier, index);
   }
 
-  ZooperRowView _buildRowView(ZooperRowModel rowModel, int index) {
-    return ZooperRowView(
-      tableConfiguration: tableConfigNotifier.currentState,
-      columns: columnStateNotifier.currentState,
-      row: rowModel,
-      rowIndex: index,
-    );
+  void sortRows() {
+    List<ZooperRowModel> updatedRowModels = rowStateNotifier.currentState;
+
+    if (tableState.currentState.primaryColumnSort?.sortOrder == null) {
+      updatedRowModels.sort((a, b) => a.order.compareTo(b.order));
+    } else {
+      updatedRowModels.sort((a, b) {
+        var valueA = tableConfigNotifier.currentState.valueGetter(
+          a.data,
+          tableState.currentState.primaryColumnSort!.identifier,
+        );
+        var valueB = tableConfigNotifier.currentState.valueGetter(
+          b.data,
+          tableState.currentState.primaryColumnSort!.identifier,
+        );
+
+        // TODO: Use a custom Sorter which can be provided by the User
+        var compare = valueA.compareTo(valueB);
+
+        return tableState.currentState.primaryColumnSort?.sortOrder == SortOrder.ascending ? compare : -compare;
+      });
+    }
+
+    // Update the rows
+    rowStateNotifier.updateRowList(updatedRowModels);
+  }
+
+  bool isReorderingEnabled() {
+    var tableData = tableState.currentState;
+
+    if (tableData.primaryColumnSort != null || tableData.secondaryColumnSort != null) {
+      return false;
+    }
+
+    return tableConfigNotifier.currentState.rowConfiguration.isReorderingEnabledBuilder.call();
   }
 }

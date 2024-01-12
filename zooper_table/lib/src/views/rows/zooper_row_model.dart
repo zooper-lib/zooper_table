@@ -10,4 +10,9 @@ class ZooperRowModel {
     required this.data,
     this.isSelected = false,
   });
+
+  @override
+  String toString() {
+    return 'ZooperRowModel{identifier: $identifier, order: $order, isSelected: $isSelected}';
+  }
 }
