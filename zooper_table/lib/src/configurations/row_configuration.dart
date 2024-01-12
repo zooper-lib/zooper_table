@@ -1,24 +1,25 @@
+import 'package:zooper_table/zooper_table.dart';
+
 class RowConfiguration {
-  final double? Function(int index) heightBuilder;
+  final String Function(int index, dynamic data) identifierBuilder;
 
-  /// The height of each row.
-  ///
-  /// This is the base value, but it can be overriden by the callback inside [BasicRow]
-  //final double rowHeight;
+  final double? Function(String identifier, int index) heightBuilder;
 
-  /// Callback for when a row is tapped.
-  ///
-  /// The callback will be called with the data of the row that was tapped.
-  /// You can override this callback for each [BasicRow]
-  final Future<void> Function(dynamic data)? onRowTap;
+  final void Function(ZooperRowModel row)? onRowTap;
 
   RowConfiguration({
-    double Function(int index)? heightBuilder,
+    String Function(int index, dynamic data)? identifierBuilder,
+    double Function(String identifier, int index)? heightBuilder,
     this.onRowTap,
-  }) : heightBuilder = heightBuilder ?? _defaultHeightBuilder;
+  })  : identifierBuilder = identifierBuilder ?? _defaultIdentifierBuilder,
+        heightBuilder = heightBuilder ?? _defaultHeightBuilder;
+
+  static String _defaultIdentifierBuilder(int index, dynamic data) {
+    return index.toString();
+  }
 
   // Default minWidth builder
-  static double? _defaultHeightBuilder(int index) {
+  static double? _defaultHeightBuilder(String identifier, int index) {
     return null;
   }
 }
