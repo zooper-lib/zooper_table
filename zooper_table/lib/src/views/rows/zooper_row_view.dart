@@ -1,57 +1,65 @@
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperRowView<T> extends StatelessWidget {
-  final TableConfiguration tableConfiguration;
-
-  /// The columns of the table
-  final List<ZooperColumnModel> columns;
-
   /// The data for this row
   final ZooperRowModel row;
 
   /// The index of this row inside the Table
   final int rowIndex;
 
-  ZooperRowView({
-    required this.tableConfiguration,
-    required this.columns,
+  const ZooperRowView({
+    super.key,
     required this.row,
     required this.rowIndex,
-  }) : super(key: ValueKey('row:$rowIndex'));
+  });
 
   @override
   Widget build(BuildContext context) {
-    final cells = _buildCells();
+    return Consumer2<TableConfigurationNotifier, ColumnStateNotifier>(
+        builder: (context, tableConfigurationNotifier, columnState, child) {
+      // Get the available columns
+      var columns = columnState.currentState;
 
-    return Row(
-      children: cells,
-    );
+      // Construct the cells for this row
+      var cellViews = _buildCells(tableConfigurationNotifier.currentState, columns);
+
+      return Row(
+        children: cellViews,
+      );
+    });
   }
 
-  List<Widget> _buildCells() {
+  List<Widget> _buildCells(TableConfiguration tableConfiguration, List<ZooperColumnModel> columns) {
     var cells = <Widget>[];
 
     for (var index = 0; index < columns.length; index++) {
-      final cellView = _buildCell(columns[index], index);
+      final cellView = _buildCell(tableConfiguration, columns[index], index);
       cells.add(cellView);
     }
 
     return cells;
   }
 
-  Widget _buildCell(ZooperColumnModel columnModel, int columnIndex) {
-    final height = tableConfiguration.rowConfiguration.heightBuilder(row.identifier, rowIndex);
-    final cellValue = tableConfiguration.valueGetter(row.data, columnModel.identifier);
+  // TODO: The parameters probably need to change when ordering columns will be implemented
+  Widget _buildCell(TableConfiguration tableConfiguration, ZooperColumnModel columnModel, int columnIndex) {
+    return Consumer3<TableState, ColumnService, RowService>(
+      builder: (context, tableState, columnService, rowService, child) {
+        final width = columnService.getColumnWidth(columnModel.identifier);
+        final height = rowService.getRowHeight(row.identifier, rowIndex);
+        final cellValue = tableConfiguration.valueGetter(row.data, columnModel.identifier);
 
-    return ZooperCellView(
-      tableConfiguration: tableConfiguration,
-      column: columnModel,
-      columnIndex: columnIndex,
-      cellValue: cellValue,
-      identifier: columnModel.identifier,
-      rowIndex: rowIndex,
-      height: height,
+        return ZooperCellView(
+          tableConfiguration: tableConfiguration,
+          columnIndex: columnIndex,
+          cellValue: cellValue,
+          identifier: columnModel.identifier,
+          rowIndex: rowIndex,
+          columnWidth: width,
+          rowHeight: height,
+        );
+      },
     );
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zooper_table/zooper_table.dart';
 
-class RowStateNotifier extends ChangeNotifier {
+class RowState extends ChangeNotifier {
   List<ZooperRowModel> _state;
 
-  RowStateNotifier(this._state);
+  RowState(this._state);
 
   List<ZooperRowModel> get currentState => _state;
 

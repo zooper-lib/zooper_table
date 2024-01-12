@@ -10,6 +10,14 @@ class ColumnConfiguration {
   /// If this function is not provided, a default function is used.
   final bool Function(String identifier) canResizeBuilder;
 
+  /// Callback to get the initial width of the column.
+  ///
+  /// This function is called with one argument:
+  /// - [identifier]: A string that identifies the column.
+  ///
+  /// If this function is not provided, a default function is used.
+  final double Function(String identifier) initialWidthBuilder;
+
   /// Callback to get the minimum width of the column.
   ///
   /// This function is called with one argument:
@@ -69,12 +77,14 @@ class ColumnConfiguration {
 
   ColumnConfiguration({
     bool Function(String identifier)? canResizeBuilder,
+    double Function(String identifier)? initialWidthBuilder,
     double Function(String identifier)? minWidthBuilder,
     double Function(String identifier)? maxWidthBuilder,
     bool Function(String identifier)? canSortBuilder,
     EdgeInsets Function(String identifier)? paddingBuilder,
     Border Function(String identifier, int index)? borderBuilder,
   })  : canResizeBuilder = canResizeBuilder ?? _defaultCanResizeBuilder,
+        initialWidthBuilder = initialWidthBuilder ?? _defaultInitialWidthBuilder,
         minWidthBuilder = minWidthBuilder ?? _defaultMinWidthBuilder,
         maxWidthBuilder = maxWidthBuilder ?? _defaultMaxWidthBuilder,
         canSortBuilder = canSortBuilder ?? _defaultCanSortBuilder,
@@ -86,6 +96,10 @@ class ColumnConfiguration {
   // Default canResize builder
   static bool _defaultCanResizeBuilder(String identifier) {
     return true;
+  }
+
+  static double _defaultInitialWidthBuilder(String identifier) {
+    return 100.0;
   }
 
   // Default minWidth builder

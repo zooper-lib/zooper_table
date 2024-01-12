@@ -12,9 +12,11 @@ class ZooperColumnView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<TableConfigurationNotifier, ColumnStateNotifier>(
-      builder: (context, tableConfigurationNotifier, columnStateNotifier, child) {
+    return Consumer3<TableConfigurationNotifier, TableState, ColumnStateNotifier>(
+      builder: (context, tableConfigurationNotifier, tableState, columnStateNotifier, child) {
         final columnIndex = columnStateNotifier.currentState.indexWhere((element) => element.identifier == identifier);
+
+        final columnWidth = tableState.currentState.columnWidths[identifier];
         final minWidth = tableConfigurationNotifier.currentState.columnConfiguration.minWidthBuilder(identifier);
         final maxWidth = tableConfigurationNotifier.currentState.columnConfiguration.maxWidthBuilder(identifier);
 
@@ -24,7 +26,7 @@ class ZooperColumnView extends StatelessWidget {
             maxWidth: maxWidth,
           ),
           child: Container(
-            width: columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier).width,
+            width: columnWidth,
             padding: tableConfigurationNotifier.currentState.columnConfiguration.paddingBuilder(identifier),
             decoration: BoxDecoration(
               border:
@@ -63,9 +65,15 @@ class ZooperColumnView extends StatelessWidget {
   }
 
   Widget _sortIcon(BuildContext context) {
-    return Consumer3<TableConfigurationNotifier, ColumnStateNotifier, ColumnService>(
-      builder: (context, tableConfigurationNotifier, columnStateNotifier, columnService, child) {
+    return Consumer4<TableConfigurationNotifier, TableState, ColumnStateNotifier, ColumnService>(
+      builder: (context, tableConfigurationNotifier, tableState, columnStateNotifier, columnService, child) {
         final column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
+
+        final columnSortOrder = tableState.currentState.primaryColumnSort == null
+            ? null
+            : tableState.currentState.primaryColumnSort?.identifier != identifier
+                ? null
+                : tableState.currentState.primaryColumnSort?.sortOrder;
 
         if (tableConfigurationNotifier.currentState.columnConfiguration.canSortBuilder(identifier) == false) {
           return const SizedBox.shrink();
@@ -75,9 +83,9 @@ class ZooperColumnView extends StatelessWidget {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () => columnService.sortColumn(column.identifier),
-            child: column.sortOrder == SortOrder.none
+            child: columnSortOrder == null
                 ? const SizedBox.shrink()
-                : column.sortOrder == SortOrder.descending
+                : columnSortOrder == SortOrder.descending
                     ? tableConfigurationNotifier.currentState.columnConfiguration.sortDescendingIconBuilder(identifier)
                     : tableConfigurationNotifier.currentState.columnConfiguration.sortAscendingIconBuilder(identifier),
           ),
@@ -87,10 +95,8 @@ class ZooperColumnView extends StatelessWidget {
   }
 
   Widget _resizeIcon(BuildContext context) {
-    return Consumer3<TableConfigurationNotifier, ColumnStateNotifier, ColumnService>(
-      builder: (context, tableConfigurationNotifier, columnStateNotifier, columnService, child) {
-        var column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
-
+    return Consumer3<TableConfigurationNotifier, TableState, ColumnService>(
+      builder: (context, tableConfigurationNotifier, tableState, columnService, child) {
         if (tableConfigurationNotifier.currentState.columnConfiguration.canResizeBuilder(identifier) == false) {
           return const SizedBox.shrink();
         }
@@ -99,7 +105,7 @@ class ZooperColumnView extends StatelessWidget {
           cursor: SystemMouseCursors.resizeColumn,
           child: GestureDetector(
             onTap: () {},
-            onHorizontalDragUpdate: (details) => columnService.updateColumnWidth(column, details.delta.dx),
+            onHorizontalDragUpdate: (details) => columnService.updateColumnWidth(identifier, details.delta.dx),
             child: const Icon(
               LucideIcons.gripVertical,
               size: 16,
