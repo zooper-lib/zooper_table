@@ -4,29 +4,33 @@ class RowService {
   final TableConfigurationNotifier tableConfigNotifier;
   final DataStateNotifier dataStateNotifier;
   final ColumnStateNotifier columnStateNotifier;
+  final RowStateNotifier rowStateNotifier;
 
   RowService({
     required this.tableConfigNotifier,
     required this.dataStateNotifier,
     required this.columnStateNotifier,
+    required this.rowStateNotifier,
   });
 
   List<ZooperRowView> buildRowViewList() {
     var rows = <ZooperRowView>[];
 
-    for (int i = 0; i < dataStateNotifier.currentState.length; i++) {
-      final row = _buildRowView(dataStateNotifier.currentState[i], i);
+    // This should be be sorted rows
+    for (int i = 0; i < rowStateNotifier.currentState.length; i++) {
+      final row = _buildRowView(rowStateNotifier.currentState[i], i);
       rows.add(row);
     }
 
     return rows;
   }
 
-  ZooperRowView _buildRowView(dynamic data, int index) {
+  ZooperRowView _buildRowView(ZooperRowModel rowModel, int index) {
     return ZooperRowView(
+      tableConfiguration: tableConfigNotifier.currentState,
       columns: columnStateNotifier.currentState,
-      data: data,
-      index: index,
+      row: rowModel,
+      rowIndex: index,
     );
   }
 }

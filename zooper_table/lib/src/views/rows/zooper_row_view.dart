@@ -1,22 +1,24 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperRowView<T> extends StatelessWidget {
+  final TableConfiguration tableConfiguration;
+
   /// The columns of the table
   final List<ZooperColumnModel> columns;
 
   /// The data for this row
-  final T data;
+  final ZooperRowModel row;
 
   /// The index of this row inside the Table
-  final int index;
+  final int rowIndex;
 
   ZooperRowView({
+    required this.tableConfiguration,
     required this.columns,
-    required this.data,
-    required this.index,
-  }) : super(key: ValueKey('row:$index'));
+    required this.row,
+    required this.rowIndex,
+  }) : super(key: ValueKey('row:$rowIndex'));
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +33,25 @@ class ZooperRowView<T> extends StatelessWidget {
     var cells = <Widget>[];
 
     for (var index = 0; index < columns.length; index++) {
-      final cellView = _buildCell(columns[index]);
+      final cellView = _buildCell(columns[index], index);
       cells.add(cellView);
     }
 
     return cells;
   }
 
-  Widget _buildCell(ZooperColumnModel columnModel) {
-    return Consumer<TableConfigurationNotifier>(builder: (context, tableConfigurationNotifier, child) {
-      final height = tableConfigurationNotifier.currentState.rowConfiguration.heightBuilder(index);
-      final cellValue = tableConfigurationNotifier.currentState.valueGetter(data, columnModel.identifier);
+  Widget _buildCell(ZooperColumnModel columnModel, int columnIndex) {
+    final height = tableConfiguration.rowConfiguration.heightBuilder(row.identifier, rowIndex);
+    final cellValue = tableConfiguration.valueGetter(row.data, columnModel.identifier);
 
-      return ZooperCellView(
-        rowData: data,
-        cellValue: cellValue,
-        identifier: columnModel.identifier,
-        index: index,
-        height: height,
-      );
-    });
+    return ZooperCellView(
+      tableConfiguration: tableConfiguration,
+      column: columnModel,
+      columnIndex: columnIndex,
+      cellValue: cellValue,
+      identifier: columnModel.identifier,
+      rowIndex: rowIndex,
+      height: height,
+    );
   }
 }

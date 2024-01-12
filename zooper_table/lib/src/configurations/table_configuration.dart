@@ -13,11 +13,15 @@ class TableConfiguration {
   /// The function that will be used to get the value of a cell.
   final dynamic Function(dynamic data, String identifier) valueGetter;
 
+  /// The initial order of the columns.
+  final List<String> initialColumnOrder;
+
   TableConfiguration({
-    required this.valueGetter,
     ColumnConfiguration? columnConfiguration,
     RowConfiguration? rowConfiguration,
     CellConfiguration? cellConfiguration,
+    required this.valueGetter,
+    this.initialColumnOrder = const [],
   })  : columnConfiguration = columnConfiguration ?? ColumnConfiguration(),
         rowConfiguration = rowConfiguration ?? RowConfiguration(),
         cellConfiguration = cellConfiguration ?? CellConfiguration();

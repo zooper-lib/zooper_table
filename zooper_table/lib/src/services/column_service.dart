@@ -3,12 +3,12 @@ import 'package:zooper_table/zooper_table.dart';
 class ColumnService {
   final TableConfigurationNotifier tableConfigNotifier;
   final ColumnStateNotifier columnStateNotifier;
-  final DataStateNotifier dataStateNotifier;
+  final RowStateNotifier rowStateNotifier;
 
   ColumnService({
     required this.tableConfigNotifier,
     required this.columnStateNotifier,
-    required this.dataStateNotifier,
+    required this.rowStateNotifier,
   });
 
   void updateColumnWidth(ZooperColumnModel model, double delta) {
@@ -47,17 +47,21 @@ class ColumnService {
     // Update all columns
     columnStateNotifier.updateAllColumns(updatedColumns);
 
-    // Sort the rows based on the sorted columns
-    List<dynamic> updatedRows = dataStateNotifier.currentState;
-    updatedRows.sort((a, b) {
-      var valueA = tableConfigNotifier.currentState.valueGetter(a, identifier);
-      var valueB = tableConfigNotifier.currentState.valueGetter(b, identifier);
-      var compare = valueA.compareTo(valueB);
-      return newSortOrder == SortOrder.ascending ? compare : -compare;
-    });
+    List<ZooperRowModel> updatedRowModels = rowStateNotifier.currentState;
+
+    if (newSortOrder == SortOrder.none) {
+      updatedRowModels.sort((a, b) => a.order.compareTo(b.order));
+    } else {
+      updatedRowModels.sort((a, b) {
+        var valueA = tableConfigNotifier.currentState.valueGetter(a.data, identifier);
+        var valueB = tableConfigNotifier.currentState.valueGetter(b.data, identifier);
+        var compare = valueA.compareTo(valueB);
+        return newSortOrder == SortOrder.ascending ? compare : -compare;
+      });
+    }
 
     // Update all rows
-    dataStateNotifier.updateAllData(updatedRows);
+    rowStateNotifier.updateRowList(updatedRowModels);
   }
 
   List<ZooperColumnView> buildColumnViewList() {
