@@ -46,10 +46,10 @@ class MyHomePage extends StatelessWidget {
           cellConfiguration: CellConfiguration(),
         ),
         columns: [
-          ZooperColumnModel(identifier: 'id', title: 'ID'),
-          ZooperColumnModel(identifier: 'name', title: 'Name'),
-          ZooperColumnModel(identifier: 'age', title: 'Age'),
-          ZooperColumnModel(identifier: 'height', title: 'Height'),
+          ColumnData(identifier: 'id', title: 'ID'),
+          ColumnData(identifier: 'name', title: 'Name'),
+          ColumnData(identifier: 'age', title: 'Age'),
+          ColumnData(identifier: 'height', title: 'Height'),
         ],
         data: List.generate(
           3,

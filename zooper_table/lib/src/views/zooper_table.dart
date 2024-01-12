@@ -10,7 +10,7 @@ class ZooperTable extends StatefulWidget {
   final TableConfiguration tableConfiguration;
 
   /// The columns for this table.
-  final List<ZooperColumnModel> columns;
+  final List<ColumnData> columns;
 
   /// The data for this table.
   final List<dynamic> data;
@@ -30,15 +30,14 @@ class ZooperTable extends StatefulWidget {
 class _ZooperTableState extends State<ZooperTable> {
   @override
   Widget build(BuildContext context) {
-    List<ZooperRowModel> rows = [];
+    List<RowData> rows = [];
 
     for (int i = 0; i < widget.data.length; i++) {
-      rows.add(ZooperRowModel(
+      rows.add(RowData(
           identifier: widget.tableConfiguration.rowConfiguration.identifierBuilder.call(
             i,
             widget.data[i],
           ),
-          order: i,
           data: widget.data[i]));
     }
 

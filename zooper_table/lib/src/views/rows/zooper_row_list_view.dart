@@ -14,7 +14,7 @@ class ZooperRowListView extends StatelessWidget {
         OverlayEntry(
           builder: (context) => Consumer3<RowService, TableState, RowState>(
             builder: (context, rowService, tableState, rowState, child) {
-              var rowViews = buildRowViewList(rowState.currentState);
+              var rowViews = buildRowViewList(rowService.getSortedRows());
 
               return CustomScrollView(
                 controller: ScrollController(),
@@ -24,10 +24,7 @@ class ZooperRowListView extends StatelessWidget {
                     delegate: ReorderableSliverChildListDelegate(
                       rowViews,
                     ),
-                    onReorder: (oldIndex, newIndex) => {
-                      //tableService.reorderRow(oldIndex, newIndex),
-                      print('Reorder from $oldIndex to $newIndex'),
-                    },
+                    onReorder: (oldIndex, newIndex) => rowService.reorderRow(oldIndex, newIndex),
                   ),
                 ],
               );
@@ -38,7 +35,7 @@ class ZooperRowListView extends StatelessWidget {
     );
   }
 
-  List<ZooperRowView> buildRowViewList(List<ZooperRowModel> rows) {
+  List<ZooperRowView> buildRowViewList(List<RowData> rows) {
     var rowViewList = <ZooperRowView>[];
 
     // This should be be sorted rows
@@ -50,7 +47,7 @@ class ZooperRowListView extends StatelessWidget {
     return rowViewList;
   }
 
-  ZooperRowView _buildRowView(ZooperRowModel rowModel, int index) {
+  ZooperRowView _buildRowView(RowData rowModel, int index) {
     return ZooperRowView(
       row: rowModel,
       rowIndex: index,

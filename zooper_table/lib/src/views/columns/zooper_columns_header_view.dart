@@ -16,7 +16,7 @@ class ZooperColumnsHeaderView extends StatelessWidget {
     });
   }
 
-  List<ZooperColumnView> buildColumnViewList(List<ZooperColumnModel> columns) {
+  List<ZooperColumnView> buildColumnViewList(List<ColumnData> columns) {
     var columnHeaderItems = <ZooperColumnView>[];
 
     for (final column in columns) {
@@ -29,7 +29,7 @@ class ZooperColumnsHeaderView extends StatelessWidget {
     return columnHeaderItems;
   }
 
-  ZooperColumnView buildColumnItem(ZooperColumnModel columnModel) {
+  ZooperColumnView buildColumnItem(ColumnData columnModel) {
     return ZooperColumnView(identifier: columnModel.identifier);
   }
 }

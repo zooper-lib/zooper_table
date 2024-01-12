@@ -1,21 +1,21 @@
 import 'package:zooper_table/zooper_table.dart';
 
-class ZooperColumnModel {
+class ColumnData {
   final String identifier;
   final String title;
 
-  ZooperColumnModel({
+  ColumnData({
     required this.identifier,
     required this.title,
   });
 
-  ZooperColumnModel copyWith({
+  ColumnData copyWith({
     String? title,
     int? order,
     double? width,
     SortOrder? sortOrder,
   }) {
-    return ZooperColumnModel(
+    return ColumnData(
       identifier: identifier,
       title: title ?? this.title,
     );
