@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reorderables/reorderables.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ZooperRowListView extends StatelessWidget {
@@ -16,6 +15,13 @@ class ZooperRowListView extends StatelessWidget {
             builder: (context, rowService, tableState, rowState, child) {
               var rowViews = buildRowViewList(rowService.getSortedRows());
 
+              return ReorderableListView(
+                buildDefaultDragHandles: false,
+                children: rowViews,
+                onReorder: (oldIndex, newIndex) => rowService.reorderRow(oldIndex, newIndex),
+              );
+
+              /* 
               return CustomScrollView(
                 controller: ScrollController(),
                 slivers: <Widget>[
@@ -28,6 +34,7 @@ class ZooperRowListView extends StatelessWidget {
                   ),
                 ],
               );
+              */
             },
           ),
         )

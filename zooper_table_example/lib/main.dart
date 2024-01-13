@@ -52,7 +52,7 @@ class MyHomePage extends StatelessWidget {
           ColumnData(identifier: 'height', title: 'Height'),
         ],
         data: List.generate(
-          3,
+          10,
           (index) => TestData(
             id: '$index',
             name: 'Test $index with some more text than usual',

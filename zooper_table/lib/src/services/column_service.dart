@@ -55,4 +55,8 @@ class ColumnService {
     // Update the rows
     rowService.setNeedsUpdate();
   }
+
+  bool isAnyColumnSorted() {
+    return tableState.currentState.primaryColumnSort != null || tableState.currentState.secondaryColumnSort != null;
+  }
 }

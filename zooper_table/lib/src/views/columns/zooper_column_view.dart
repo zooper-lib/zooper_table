@@ -47,8 +47,8 @@ class ZooperColumnView extends StatelessWidget {
   }
 
   Widget _title(BuildContext context) {
-    return Consumer2<ColumnStateNotifier, ColumnService>(
-      builder: (context, columnStateNotifier, columnService, child) {
+    return Consumer3<TableConfigurationNotifier, ColumnStateNotifier, ColumnService>(
+      builder: (context, tableConfigurationNotifier, columnStateNotifier, columnService, child) {
         var column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
 
         return Expanded(
@@ -57,6 +57,7 @@ class ZooperColumnView extends StatelessWidget {
             child: Text(
               column.title,
               overflow: TextOverflow.ellipsis,
+              style: tableConfigurationNotifier.currentState.columnConfiguration.textStyleBuilder(identifier),
             ),
           ),
         );

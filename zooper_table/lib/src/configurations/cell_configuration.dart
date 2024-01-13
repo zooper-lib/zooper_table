@@ -23,39 +23,19 @@ class CellConfiguration {
   /// - [index]: The index of the cell in its row.
   ///
   /// If this function is not provided, a default function is used.
-  final Border Function(dynamic data, String identifier, int index) borderBuilder;
+  final Border? Function(dynamic data, String identifier, int columnIndex, int rowIndex) borderBuilder;
 
   CellConfiguration({
     EdgeInsets Function(String identifier, int columnIndex, int rowIndex, dynamic data)? paddingBuilder,
-    Border Function(dynamic data, String identifier, int index)? borderBuilder,
+    Border? Function(dynamic data, String identifier, int columnIndex, int rowIndex)? borderBuilder,
   })  : paddingBuilder = paddingBuilder ?? _defaultPaddingBuilder,
         borderBuilder = borderBuilder ?? _defaultBorderBuilder;
 
-  static EdgeInsets _defaultPaddingBuilder(
-    String identifier,
-    int columnIndex,
-    int rowIndex,
-    dynamic data,
-  ) {
-    return const EdgeInsets.all(4);
+  static EdgeInsets _defaultPaddingBuilder(String identifier, int columnIndex, int rowIndex, dynamic data) {
+    return const EdgeInsets.only(right: 10);
   }
 
-  static Border _defaultBorderBuilder(dynamic data, String identifier, int index) {
-    return Border(
-      left: index != 0
-          ? BorderSide.none
-          : BorderSide(
-              color: Colors.grey.shade300,
-              width: 1,
-            ),
-      right: BorderSide(
-        color: Colors.grey.shade300,
-        width: 1,
-      ),
-      bottom: BorderSide(
-        color: Colors.grey.shade300,
-        width: 1,
-      ),
-    );
+  static Border? _defaultBorderBuilder(dynamic data, String columnIdentifier, int columnIndex, int rowIndex) {
+    return null;
   }
 }
