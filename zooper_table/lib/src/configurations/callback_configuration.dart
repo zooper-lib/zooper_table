@@ -14,6 +14,20 @@ class CallbackConfiguration {
   /// updates in response to the sorting of a column, such as updating data or UI elements accordingly.
   final void Function(String columnIdentifier, SortOrder sortOrder)? onColumnSort;
 
+  /// A callback that is triggered when a column is reordered.
+  ///
+  /// This optional callback is invoked after a column has been successfully reordered. It provides
+  /// a notification mechanism for users to respond to the column reorder event.
+  ///
+  /// Parameters:
+  /// - [columnIdentifier]: A string representing the identifier of the column that has been reordered.
+  /// - [oldIndex]: An integer representing the column's original index before the reordering.
+  /// - [newIndex]: An integer representing the column's new index after the reordering.
+  ///
+  /// This callback is `null` by default. When implemented, it can be utilized to perform actions or
+  /// updates in response to the column's reordering, such as adjusting data displays or UI elements.
+  final void Function(String columnIdentifier, int oldIndex, int newIndex)? onColumnReorder;
+
   /// A callback that notifies when a row has been reordered.
   ///
   /// This optional callback is invoked after a row has been successfully reordered. It serves as
@@ -44,6 +58,7 @@ class CallbackConfiguration {
 
   CallbackConfiguration({
     this.onColumnSort,
+    this.onColumnReorder,
     this.onRowReorder,
     this.onRowSelected,
   });
