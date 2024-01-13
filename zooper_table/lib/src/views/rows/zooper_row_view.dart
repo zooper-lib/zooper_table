@@ -17,7 +17,7 @@ class ZooperRowView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<RowService, TableConfigurationNotifier, ColumnStateNotifier>(
+    return Consumer3<RowService, TableConfigurationNotifier, ColumnState>(
       builder: (context, rowService, tableConfigurationNotifier, columnState, child) {
         // Get the available columns
         var columns = columnState.currentState;
@@ -33,16 +33,16 @@ class ZooperRowView<T> extends StatelessWidget {
             InkWell(
               onTap: () => rowService.onRowTap(row),
               child: Container(
-                height: rowService.getRowHeight(row.identifier, rowIndex),
+                height: rowService.getRowHeight(row.rowIdentifier, rowIndex),
                 decoration: BoxDecoration(
                   border: tableConfigurationNotifier.currentState.rowConfiguration.borderBuilder(
-                    row.identifier,
+                    row.rowIdentifier,
                     rowIndex,
                     row.isSelected,
                   ),
                   color: row.isSelected
                       ? tableConfigurationNotifier.currentState.rowConfiguration
-                          .selectedBackgroundColorBuilder(row.identifier, rowIndex)
+                          .selectedBackgroundColorBuilder(row.rowIdentifier, rowIndex)
                       : Colors.transparent,
                 ),
                 child: Row(
@@ -73,17 +73,16 @@ class ZooperRowView<T> extends StatelessWidget {
     return cells;
   }
 
-  // TODO: The parameters probably need to change when ordering columns will be implemented
   Widget _buildCell(TableConfiguration tableConfiguration, ColumnData columnModel, int columnIndex) {
     return Consumer3<TableState, ColumnService, RowService>(
       builder: (context, tableState, columnService, rowService, child) {
         final width = columnService.getColumnWidth(columnModel.identifier);
-        final height = rowService.getRowHeight(row.identifier, rowIndex);
+        final height = rowService.getRowHeight(row.rowIdentifier, rowIndex);
         final cellValue = tableConfiguration.valueGetter(row.data, columnModel.identifier);
 
         return ZooperCellView(
           columnIndex: columnIndex,
-          identifier: columnModel.identifier,
+          columnIdentifier: columnModel.identifier,
           rowIndex: rowIndex,
           cellValue: cellValue,
           columnWidth: width,

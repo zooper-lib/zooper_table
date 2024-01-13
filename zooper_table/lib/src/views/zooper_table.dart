@@ -34,7 +34,7 @@ class _ZooperTableState extends State<ZooperTable> {
 
     for (int i = 0; i < widget.data.length; i++) {
       rows.add(RowData(
-          identifier: widget.tableConfiguration.rowConfiguration.identifierBuilder.call(
+          rowIdentifier: widget.tableConfiguration.rowConfiguration.identifierBuilder.call(
             i,
             widget.data[i],
           ),
@@ -46,8 +46,8 @@ class _ZooperTableState extends State<ZooperTable> {
         ChangeNotifierProvider<TableConfigurationNotifier>(
           create: (_) => TableConfigurationNotifier(widget.tableConfiguration),
         ),
-        ChangeNotifierProvider<ColumnStateNotifier>(
-          create: (_) => ColumnStateNotifier(widget.columns),
+        ChangeNotifierProvider<ColumnState>(
+          create: (_) => ColumnState(widget.columns),
         ),
         ChangeNotifierProvider<RowState>(
           create: (_) => RowState(rows),
@@ -86,7 +86,7 @@ class _ZooperTableState extends State<ZooperTable> {
             rowService: context.read(),
             tableConfigNotifier: context.read(),
             tableState: context.read(),
-            columnStateNotifier: context.read(),
+            columnState: context.read(),
           ),
         ),
         Provider<CellService>(
@@ -96,10 +96,13 @@ class _ZooperTableState extends State<ZooperTable> {
           ),
         ),
       ],
-      child: const Column(
+      child: Column(
         children: [
-          ZooperColumnsHeaderView(),
-          Expanded(
+          SizedBox(
+            height: widget.tableConfiguration.columnConfiguration.heightBuilder(),
+            child: const ZooperColumnsHeaderView(),
+          ),
+          const Expanded(
             child: ZooperRowListView(),
           ),
         ],

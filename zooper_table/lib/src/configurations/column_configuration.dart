@@ -159,10 +159,10 @@ class ColumnConfiguration {
   }
 
   static Widget _defaultSortAscendingIconBuilder(String identifier) {
-    return const Icon(LucideIcons.arrowUpAZ, size: 16);
+    return const Icon(LucideIcons.arrowDownAZ, size: 16);
   }
 
   static Widget _defaultSortDescendingIconBuilder(String identifier) {
-    return const Icon(LucideIcons.arrowDownAZ, size: 16);
+    return const Icon(LucideIcons.arrowUpAZ, size: 16);
   }
 }

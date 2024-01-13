@@ -7,28 +7,52 @@ class ZooperColumnsHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<TableConfigurationNotifier, TableState, ColumnStateNotifier>(
-        builder: (context, tableConfigState, tableState, columnState, child) {
-      final columnViewList = buildColumnViewList(tableConfigState.currentState, columnState.currentState);
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) => Consumer4<TableConfigurationNotifier, TableState, ColumnState, ColumnService>(
+            builder: (context, tableConfigState, tableState, columnState, columnService, child) {
+              final columnViewList = buildColumnViewList(tableConfigState.currentState, columnState.currentState);
 
-      return Container(
-        height: tableConfigState.currentState.columnConfiguration.heightBuilder.call(),
-        decoration: BoxDecoration(
-          border: tableConfigState.currentState.columnConfiguration.headerBorderBuilder(),
-        ),
-        child: Row(
-          children: columnViewList,
-        ),
-      );
-    });
+              final dragHandle = _buildDragHandleSpacing(tableConfigState.currentState);
+
+              return Container(
+                height: tableConfigState.currentState.columnConfiguration.heightBuilder(),
+                decoration: BoxDecoration(
+                  border: tableConfigState.currentState.columnConfiguration.headerBorderBuilder(),
+                ),
+                child: Row(
+                  children: [
+                    dragHandle,
+                    Expanded(
+                      child: ReorderableListView(
+                        scrollDirection: Axis.horizontal,
+                        buildDefaultDragHandles: false,
+                        onReorder: (oldIndex, newIndex) => columnService.reorderColumn(oldIndex, newIndex),
+                        children: columnViewList,
+                      ),
+                    ),
+                  ],
+                ),
+
+                /* child: ReorderableRow(
+                  onReorder: (oldIndex, newIndex) => columnService.reorderColumn(oldIndex, newIndex),
+                  children: columnViewList,
+                ), */
+              );
+            },
+          ),
+        )
+      ],
+    );
   }
 
   List<Widget> buildColumnViewList(TableConfiguration tableConfiguration, List<ColumnData> columns) {
     var columnHeaderItems = <Widget>[];
 
     // Add the drag handle
-    final dragHandle = _buildDragHandleSpacing(tableConfiguration);
-    columnHeaderItems.add(dragHandle);
+    //final dragHandle = _buildDragHandleSpacing(tableConfiguration);
+    //columnHeaderItems.add(dragHandle);
 
     for (final column in columns) {
       final columnHeaderItemView = buildColumnItem(
@@ -46,6 +70,7 @@ class ZooperColumnsHeaderView extends StatelessWidget {
 
   Widget _buildDragHandleSpacing(TableConfiguration tableConfiguration) {
     return SizedBox(
+      key: const ValueKey('dragHandleSpacing'),
       width: tableConfiguration.rowConfiguration.rowDragConfiguration.widthBuilder(0, null),
     );
   }
