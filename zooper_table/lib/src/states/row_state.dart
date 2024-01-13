@@ -9,7 +9,7 @@ class RowState extends ChangeNotifier {
   List<RowData> get currentState => _state;
 
   void updateRow(RowData row) {
-    var index = _state.indexWhere((element) => element.identifier == row.identifier);
+    var index = _state.indexWhere((element) => element.rowIdentifier == row.rowIdentifier);
     _state[index] = row;
     notifyListeners();
   }
@@ -20,7 +20,7 @@ class RowState extends ChangeNotifier {
   }
 
   RowData getRowByIdentifier(String identifier) {
-    return _state.firstWhere((element) => element.identifier == identifier);
+    return _state.firstWhere((element) => element.rowIdentifier == identifier);
   }
 
   void setNeedsUpdate() {

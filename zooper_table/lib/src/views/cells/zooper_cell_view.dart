@@ -4,7 +4,7 @@ import 'package:zooper_table/zooper_table.dart';
 
 class ZooperCellView extends StatelessWidget {
   /// The identifier of the column
-  final String identifier;
+  final String columnIdentifier;
 
   final int columnIndex;
   final int rowIndex;
@@ -21,12 +21,12 @@ class ZooperCellView extends StatelessWidget {
 
   ZooperCellView({
     required this.columnIndex,
-    required this.identifier,
+    required this.columnIdentifier,
     required this.rowIndex,
     required this.cellValue,
     required this.columnWidth,
     required this.rowHeight,
-  }) : super(key: ValueKey('cell:$identifier:$rowIndex'));
+  }) : super(key: ValueKey('cell:$columnIndex:$rowIndex'));
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +36,10 @@ class ZooperCellView extends StatelessWidget {
           width: columnWidth,
           height: rowHeight,
           padding: tableConfigurationNotifier.currentState.cellConfiguration
-              .paddingBuilder(identifier, columnIndex, rowIndex, cellValue),
+              .paddingBuilder(columnIdentifier, columnIndex, rowIndex, cellValue),
           decoration: BoxDecoration(
             border: tableConfigurationNotifier.currentState.cellConfiguration
-                .borderBuilder(cellValue, identifier, columnIndex, rowIndex),
+                .borderBuilder(cellValue, columnIdentifier, columnIndex, rowIndex),
           ),
           child: Align(
             alignment: Alignment.centerLeft,

@@ -3,7 +3,7 @@ import 'package:zooper_table/zooper_table.dart';
 class RowService {
   final TableConfigurationNotifier tableConfigNotifier;
   final DataStateNotifier dataStateNotifier;
-  final ColumnStateNotifier columnStateNotifier;
+  final ColumnState columnStateNotifier;
   final RowState rowState;
 
   final TableState tableState;
@@ -46,7 +46,7 @@ class RowService {
       // TODO: Use a custom Sorter which can be provided by the User
       var compare = valueA.compareTo(valueB);
 
-      return tableState.currentState.primaryColumnSort?.sortOrder == SortOrder.ascending ? -compare : compare;
+      return tableState.currentState.primaryColumnSort?.sortOrder == SortOrder.ascending ? compare : -compare;
     });
 
     return sortedRows;
