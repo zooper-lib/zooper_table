@@ -7,17 +7,28 @@ class ZooperColumnsHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<TableState, ColumnStateNotifier>(builder: (context, tableState, columnState, child) {
-      final columnViewList = buildColumnViewList(columnState.currentState);
+    return Consumer3<TableConfigurationNotifier, TableState, ColumnStateNotifier>(
+        builder: (context, tableConfigState, tableState, columnState, child) {
+      final columnViewList = buildColumnViewList(tableConfigState.currentState, columnState.currentState);
 
-      return Row(
-        children: columnViewList,
+      return Container(
+        height: tableConfigState.currentState.columnConfiguration.heightBuilder.call(),
+        decoration: BoxDecoration(
+          border: tableConfigState.currentState.columnConfiguration.headerBorderBuilder(),
+        ),
+        child: Row(
+          children: columnViewList,
+        ),
       );
     });
   }
 
-  List<ZooperColumnView> buildColumnViewList(List<ColumnData> columns) {
-    var columnHeaderItems = <ZooperColumnView>[];
+  List<Widget> buildColumnViewList(TableConfiguration tableConfiguration, List<ColumnData> columns) {
+    var columnHeaderItems = <Widget>[];
+
+    // Add the drag handle
+    final dragHandle = _buildDragHandleSpacing(tableConfiguration);
+    columnHeaderItems.add(dragHandle);
 
     for (final column in columns) {
       final columnHeaderItemView = buildColumnItem(
@@ -31,5 +42,11 @@ class ZooperColumnsHeaderView extends StatelessWidget {
 
   ZooperColumnView buildColumnItem(ColumnData columnModel) {
     return ZooperColumnView(identifier: columnModel.identifier);
+  }
+
+  Widget _buildDragHandleSpacing(TableConfiguration tableConfiguration) {
+    return SizedBox(
+      width: tableConfiguration.rowConfiguration.rowDragConfiguration.widthBuilder(0, null),
+    );
   }
 }

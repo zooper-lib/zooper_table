@@ -34,6 +34,10 @@ class ColumnConfiguration {
   /// If this function is not provided, a default function is used.
   final double Function(String identifier) maxWidthBuilder;
 
+  final double? Function() heightBuilder;
+
+  final TextStyle? Function(String identifier) textStyleBuilder;
+
   /// Callback to get whether the column can be sorted.
   ///
   /// This function is called with one argument:
@@ -50,6 +54,9 @@ class ColumnConfiguration {
   /// If this function is not provided, a default function is used.
   final EdgeInsets Function(String identifier) paddingBuilder;
 
+  /// The border builder for the whole header
+  final Border? Function() headerBorderBuilder;
+
   /// A function that returns the border.
   ///
   /// This function is called with two arguments:
@@ -57,7 +64,7 @@ class ColumnConfiguration {
   /// - [index]: The index of the column.
   ///
   /// If this function is not provided, a default function is used.
-  final Border Function(String identifier, int index) borderBuilder;
+  final Border? Function(String identifier, int index) borderBuilder;
 
   /// A function that returns the icon for ascending sort.
   ///
@@ -80,15 +87,21 @@ class ColumnConfiguration {
     double Function(String identifier)? initialWidthBuilder,
     double Function(String identifier)? minWidthBuilder,
     double Function(String identifier)? maxWidthBuilder,
+    double? Function()? heightBuilder,
+    TextStyle? Function(String identifier)? textStyleBuilder,
     bool Function(String identifier)? canSortBuilder,
     EdgeInsets Function(String identifier)? paddingBuilder,
-    Border Function(String identifier, int index)? borderBuilder,
+    Border? Function()? headerBorderBuilder,
+    Border? Function(String identifier, int index)? borderBuilder,
   })  : canResizeBuilder = canResizeBuilder ?? _defaultCanResizeBuilder,
         initialWidthBuilder = initialWidthBuilder ?? _defaultInitialWidthBuilder,
         minWidthBuilder = minWidthBuilder ?? _defaultMinWidthBuilder,
         maxWidthBuilder = maxWidthBuilder ?? _defaultMaxWidthBuilder,
+        heightBuilder = heightBuilder ?? _defaultHeightBuilder,
+        textStyleBuilder = textStyleBuilder ?? _defaultTextStyleBuilder,
         canSortBuilder = canSortBuilder ?? _defaultCanSortBuilder,
         paddingBuilder = paddingBuilder ?? _defaultPaddingBuilder,
+        headerBorderBuilder = headerBorderBuilder ?? _defaultHeaderBorderBuilder,
         borderBuilder = borderBuilder ?? _defaultBorderBuilder,
         sortAscendingIconBuilder = _defaultSortAscendingIconBuilder,
         sortDescendingIconBuilder = _defaultSortDescendingIconBuilder;
@@ -112,32 +125,37 @@ class ColumnConfiguration {
     return 500.0;
   }
 
+  static double? _defaultHeightBuilder() {
+    return 40;
+  }
+
+  static TextStyle? _defaultTextStyleBuilder(String identifier) {
+    return const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+    );
+  }
+
   // Default maxWidth builder
   static bool _defaultCanSortBuilder(String identifier) {
     return true;
   }
 
   static EdgeInsets _defaultPaddingBuilder(String identifier) {
-    return const EdgeInsets.all(4);
+    return const EdgeInsets.only(right: 10);
   }
 
-  static Border _defaultBorderBuilder(String identifier, int index) {
+  static Border? _defaultHeaderBorderBuilder() {
     return Border(
-      left: index != 0
-          ? BorderSide.none
-          : BorderSide(
-              color: Colors.grey.shade300,
-              width: 1,
-            ),
-      right: BorderSide(
-        color: Colors.grey.shade300,
-        width: 1,
-      ),
       bottom: BorderSide(
         color: Colors.grey.shade300,
         width: 1,
       ),
     );
+  }
+
+  static Border? _defaultBorderBuilder(String identifier, int index) {
+    return null;
   }
 
   static Widget _defaultSortAscendingIconBuilder(String identifier) {

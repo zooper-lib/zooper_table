@@ -16,13 +16,18 @@ class TableConfiguration {
   /// The initial order of the columns.
   final List<String> initialColumnOrder;
 
+  /// Configuration for callbacks of this table.
+  final CallbackConfiguration callbackConfiguration;
+
   TableConfiguration({
     ColumnConfiguration? columnConfiguration,
     RowConfiguration? rowConfiguration,
     CellConfiguration? cellConfiguration,
     required this.valueGetter,
     this.initialColumnOrder = const [],
+    CallbackConfiguration? callbackConfiguration,
   })  : columnConfiguration = columnConfiguration ?? ColumnConfiguration(),
         rowConfiguration = rowConfiguration ?? RowConfiguration(),
-        cellConfiguration = cellConfiguration ?? CellConfiguration();
+        cellConfiguration = cellConfiguration ?? CellConfiguration(),
+        callbackConfiguration = callbackConfiguration ?? CallbackConfiguration();
 }

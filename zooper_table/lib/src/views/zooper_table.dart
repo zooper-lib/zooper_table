@@ -69,12 +69,15 @@ class _ZooperTableState extends State<ZooperTable> {
             ),
           ),
         ),
+        Provider<TableService>(
+          create: (context) => TableService(),
+        ),
         Provider<RowService>(
           create: (context) => RowService(
             tableConfigNotifier: context.read(),
             dataStateNotifier: context.read(),
             columnStateNotifier: context.read(),
-            rowStateNotifier: context.read(),
+            rowState: context.read(),
             tableState: context.read(),
           ),
         ),
@@ -86,16 +89,17 @@ class _ZooperTableState extends State<ZooperTable> {
             columnStateNotifier: context.read(),
           ),
         ),
-
-        Provider<TableService>(
-          create: (context) => TableService(),
+        Provider<CellService>(
+          create: (context) => CellService(
+            tableConfigurationNotifier: context.read(),
+            dataStateNotifier: context.read(),
+          ),
         ),
       ],
       child: const Column(
         children: [
           ZooperColumnsHeaderView(),
-          SizedBox(
-            height: 200,
+          Expanded(
             child: ZooperRowListView(),
           ),
         ],
