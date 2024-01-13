@@ -83,7 +83,6 @@ class _ZooperTableState extends State<ZooperTable> {
         ),
         Provider<ColumnService>(
           create: (context) => ColumnService(
-            rowService: context.read(),
             tableConfigNotifier: context.read(),
             tableState: context.read(),
             columnState: context.read(),

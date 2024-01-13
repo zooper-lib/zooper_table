@@ -1,15 +1,12 @@
 import 'package:zooper_table/zooper_table.dart';
 
 class ColumnService {
-  final RowService rowService;
-
   final TableConfigurationNotifier tableConfigNotifier;
   final ColumnState columnState;
 
   final TableState tableState;
 
   ColumnService({
-    required this.rowService,
     required this.tableConfigNotifier,
     required this.columnState,
     required this.tableState,
@@ -58,9 +55,6 @@ class ColumnService {
             : null;
 
     tableState.updateState(tableStateSnapshot);
-
-    // Update the rows
-    rowService.setNeedsUpdate();
   }
 
   bool isAnyColumnSorted() {
@@ -70,10 +64,10 @@ class ColumnService {
   void reorderColumn(int oldIndex, int newIndex) {
     var columnSnapshot = columnState.currentState;
 
-    // Get the row which should be reordered
-    var row = columnSnapshot[oldIndex];
+    // Get the column which should be reordered
+    var column = columnSnapshot[oldIndex];
 
-    // Remove the row from the list
+    // Remove the column from the list
     columnSnapshot.removeAt(oldIndex);
 
     // Adjusting newIndex when dragging downwards
@@ -81,14 +75,14 @@ class ColumnService {
       newIndex -= 1;
     }
 
-    // Add the row to the new index
-    columnSnapshot.insert(newIndex, row);
+    // Add the column to the new index
+    columnSnapshot.insert(newIndex, column);
 
-    // Update all rows
+    // Update all columns
     columnState.updateAllColumns(columnSnapshot);
 
     // Call the callback
-    tableConfigNotifier.currentState.callbackConfiguration.onRowReorder?.call(columnSnapshot, oldIndex, newIndex);
+    tableConfigNotifier.currentState.callbackConfiguration.onColumnReorder?.call(column.identifier, oldIndex, newIndex);
   }
 
   bool canResize(String columnIdentifier) {
