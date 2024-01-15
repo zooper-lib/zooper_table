@@ -80,25 +80,55 @@ class ColumnService {
     tableState.updateState(tableStateSnapshot);
   }
 
-  void sortColumn(String identifier) {
+  void sortColumn(String identifier, bool secondarySort) {
     // Check if the column can be sorted
     if (!tableConfigNotifier.currentState.columnConfiguration.canSortBuilder(identifier)) {
       return;
     }
 
-    var tableStateSnapshot = tableState.currentState;
+    // Sort the column
+    var tableStateSnapshot = (secondarySort)
+        ? _secondarySortColumn(identifier, tableState.currentState)
+        : _primarySortColumn(identifier, tableState.currentState);
 
-    tableStateSnapshot.primaryColumnSort = tableStateSnapshot.primaryColumnSort?.sortOrder == null
-        ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
-        : tableStateSnapshot.primaryColumnSort?.sortOrder == SortOrder.ascending
-            ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
-            : null;
-
+    // Update the state
     tableState.updateState(tableStateSnapshot);
 
     // Call the callback
     tableConfigNotifier.currentState.callbackConfiguration.onColumnSort
         ?.call(identifier, tableStateSnapshot.primaryColumnSort?.sortOrder);
+  }
+
+  TableData _primarySortColumn(String identifier, TableData tableData) {
+    // If an other column is previously sorted, start sorting from beginning
+    if (tableData.primaryColumnSort?.identifier != identifier) {
+      tableData.primaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
+
+      // Also set the secondary sort to null
+      tableData.secondaryColumnSort = null;
+    } else {
+      tableData.primaryColumnSort = tableData.primaryColumnSort?.sortOrder == null
+          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
+          : tableData.primaryColumnSort?.sortOrder == SortOrder.ascending
+              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
+              : null;
+    }
+
+    return tableData;
+  }
+
+  TableData _secondarySortColumn(String identifier, TableData tableData) {
+    if (tableData.secondaryColumnSort?.identifier != identifier) {
+      tableData.secondaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
+    } else {
+      tableData.secondaryColumnSort = tableData.secondaryColumnSort?.sortOrder == null
+          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
+          : tableData.secondaryColumnSort?.sortOrder == SortOrder.ascending
+              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
+              : null;
+    }
+
+    return tableData;
   }
 
   bool isAnyColumnSorted() {

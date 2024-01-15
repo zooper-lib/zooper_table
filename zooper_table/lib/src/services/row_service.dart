@@ -26,30 +26,54 @@ class RowService {
 
   List<RowData> getSortedRows() {
     // Generate a new List from the current state, else we will edit the existing one
-    List<RowData> sortedRows = List.from(rowState.currentState);
+    List<RowData> rowSnapshot = List.from(rowState.currentState);
 
     // If the primary sort order is null, there is no sorting and we directly return the list
     if (tableState.currentState.primaryColumnSort == null) {
-      return sortedRows;
+      return rowSnapshot;
     }
 
-    sortedRows.sort((a, b) {
-      var valueA = tableConfigNotifier.currentState.valueGetter(
+    rowSnapshot.sort((a, b) {
+      final primaryValueA = tableConfigNotifier.currentState.valueGetter(
         a.data,
         tableState.currentState.primaryColumnSort!.identifier,
       );
-      var valueB = tableConfigNotifier.currentState.valueGetter(
+      final primaryValueB = tableConfigNotifier.currentState.valueGetter(
         b.data,
         tableState.currentState.primaryColumnSort!.identifier,
       );
 
       // TODO: Use a custom Sorter which can be provided by the User
-      var compare = valueA.compareTo(valueB);
+      final primaryCompare = primaryValueA.compareTo(primaryValueB);
 
-      return tableState.currentState.primaryColumnSort?.sortOrder == SortOrder.ascending ? compare : -compare;
+      if (primaryCompare != 0) {
+        return tableState.currentState.primaryColumnSort?.sortOrder == SortOrder.ascending
+            ? primaryCompare
+            : -primaryCompare;
+      }
+
+      if (tableState.currentState.secondaryColumnSort == null) {
+        return 0;
+      }
+
+      final secondaryValueA = tableConfigNotifier.currentState.valueGetter(
+        a.data,
+        tableState.currentState.secondaryColumnSort!.identifier,
+      );
+
+      final secondaryValueB = tableConfigNotifier.currentState.valueGetter(
+        b.data,
+        tableState.currentState.secondaryColumnSort!.identifier,
+      );
+
+      final secondaryCompare = secondaryValueA.compareTo(secondaryValueB);
+
+      return tableState.currentState.secondaryColumnSort?.sortOrder == SortOrder.ascending
+          ? secondaryCompare
+          : -secondaryCompare;
     });
 
-    return sortedRows;
+    return rowSnapshot;
   }
 
   bool isReorderingEnabled() {
