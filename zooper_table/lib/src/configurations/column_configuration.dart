@@ -2,88 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 class ColumnConfiguration {
-  /// Callback to get whether the column can be resized.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Determines if a column identified by [identifier] can be resized.
   final bool Function(String identifier) canResizeBuilder;
 
-  /// Callback to get the initial width of the column.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Provides the initial width for a column identified by [identifier].
   final double Function(String identifier) initialWidthBuilder;
 
-  /// Callback to get the minimum width of the column.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Determines the minimum width for a column identified by [identifier].
   final double Function(String identifier) minWidthBuilder;
 
-  /// Callback to get the maximum width of the column.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Determines the maximum width for a column identified by [identifier].
   final double Function(String identifier) maxWidthBuilder;
 
+  /// Provides a builder for the height of rows.
   final double? Function() heightBuilder;
 
+  /// Provides the text style for a column identified by [identifier].
   final TextStyle? Function(String identifier) textStyleBuilder;
 
-  /// Callback to get whether the column can be sorted.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Determines if a column identified by [identifier] can be sorted.
   final bool Function(String identifier) canSortBuilder;
 
-  /// Callback to get the padding for a cell.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Provides the padding for a column identified by [identifier].
   final EdgeInsets Function(String identifier) paddingBuilder;
 
-  /// The border builder for the whole header
+  /// Provides a builder for the border of the header.
   final Border? Function() headerBorderBuilder;
 
-  /// A function that returns the border.
-  ///
-  /// This function is called with two arguments:
-  /// - [identifier]: A string that identifies the column.
-  /// - [index]: The index of the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Provides a builder for the border of a row, given the column [identifier] and row [index].
   final Border? Function(String identifier, int index) borderBuilder;
 
-  /// A function that returns the icon for ascending sort.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Provides a widget for the ascending sort icon for a primary column identified by [identifier].
   final Widget Function(String identifier) primarySortAscendingIconBuilder;
 
-  /// A function that returns the icon for descending sort.
-  ///
-  /// This function is called with one argument:
-  /// - [identifier]: A string that identifies the column.
-  ///
-  /// If this function is not provided, a default function is used.
+  /// Provides a widget for the descending sort icon for a primary column identified by [identifier].
   final Widget Function(String identifier) primarySortDescendingIconBuilder;
 
+  /// Provides a widget for the ascending sort icon for a secondary column identified by [identifier].
   final Widget Function(String identifier) secondarySortAscendingIconBuilder;
 
+  /// Provides a widget for the descending sort icon for a secondary column identified by [identifier].
   final Widget Function(String identifier) secondarySortDescendingIconBuilder;
 
   ColumnConfiguration({
@@ -112,7 +70,6 @@ class ColumnConfiguration {
         secondarySortAscendingIconBuilder = _defaultSecondarySortAscendingIconBuilder,
         secondarySortDescendingIconBuilder = _defaultSecondarySortDescendingIconBuilder;
 
-  // Default canResize builder
   static bool _defaultCanResizeBuilder(String identifier) {
     return true;
   }
@@ -121,12 +78,10 @@ class ColumnConfiguration {
     return 100.0;
   }
 
-  // Default minWidth builder
   static double _defaultMinWidthBuilder(String identifier) {
     return 50.0;
   }
 
-  // Default maxWidth builder
   static double _defaultMaxWidthBuilder(String identifier) {
     return 500.0;
   }
@@ -142,7 +97,6 @@ class ColumnConfiguration {
     );
   }
 
-  // Default maxWidth builder
   static bool _defaultCanSortBuilder(String identifier) {
     return true;
   }

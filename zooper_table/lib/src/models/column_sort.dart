@@ -8,4 +8,18 @@ class ColumnSort {
     required this.identifier,
     required this.sortOrder,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'identifier': identifier,
+      'sortOrder': sortOrder.toString(),
+    };
+  }
+
+  factory ColumnSort.fromJson(Map<String, dynamic> json) {
+    return ColumnSort(
+      identifier: json['identifier'],
+      sortOrder: SortOrder.values.firstWhere((e) => e.toString() == json['sortOrder']),
+    );
+  }
 }

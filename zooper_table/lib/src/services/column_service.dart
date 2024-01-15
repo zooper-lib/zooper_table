@@ -99,38 +99,6 @@ class ColumnService {
         ?.call(identifier, tableStateSnapshot.primaryColumnSort?.sortOrder);
   }
 
-  TableData _primarySortColumn(String identifier, TableData tableData) {
-    // If an other column is previously sorted, start sorting from beginning
-    if (tableData.primaryColumnSort?.identifier != identifier) {
-      tableData.primaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
-
-      // Also set the secondary sort to null
-      tableData.secondaryColumnSort = null;
-    } else {
-      tableData.primaryColumnSort = tableData.primaryColumnSort?.sortOrder == null
-          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
-          : tableData.primaryColumnSort?.sortOrder == SortOrder.ascending
-              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
-              : null;
-    }
-
-    return tableData;
-  }
-
-  TableData _secondarySortColumn(String identifier, TableData tableData) {
-    if (tableData.secondaryColumnSort?.identifier != identifier) {
-      tableData.secondaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
-    } else {
-      tableData.secondaryColumnSort = tableData.secondaryColumnSort?.sortOrder == null
-          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
-          : tableData.secondaryColumnSort?.sortOrder == SortOrder.ascending
-              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
-              : null;
-    }
-
-    return tableData;
-  }
-
   bool isAnyColumnSorted() {
     return tableState.currentState.primaryColumnSort != null || tableState.currentState.secondaryColumnSort != null;
   }
@@ -184,5 +152,37 @@ class ColumnService {
 
   bool canResize(String columnIdentifier) {
     return tableConfigNotifier.currentState.columnConfiguration.canResizeBuilder(columnIdentifier);
+  }
+
+  TableData _primarySortColumn(String identifier, TableData tableData) {
+    // If an other column is previously sorted, start sorting from beginning
+    if (tableData.primaryColumnSort?.identifier != identifier) {
+      tableData.primaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
+
+      // Also set the secondary sort to null
+      tableData.secondaryColumnSort = null;
+    } else {
+      tableData.primaryColumnSort = tableData.primaryColumnSort?.sortOrder == null
+          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
+          : tableData.primaryColumnSort?.sortOrder == SortOrder.ascending
+              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
+              : null;
+    }
+
+    return tableData;
+  }
+
+  TableData _secondarySortColumn(String identifier, TableData tableData) {
+    if (tableData.secondaryColumnSort?.identifier != identifier) {
+      tableData.secondaryColumnSort = ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending);
+    } else {
+      tableData.secondaryColumnSort = tableData.secondaryColumnSort?.sortOrder == null
+          ? ColumnSort(identifier: identifier, sortOrder: SortOrder.ascending)
+          : tableData.secondaryColumnSort?.sortOrder == SortOrder.ascending
+              ? ColumnSort(identifier: identifier, sortOrder: SortOrder.descending)
+              : null;
+    }
+
+    return tableData;
   }
 }
