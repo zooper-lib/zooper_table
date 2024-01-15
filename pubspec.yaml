@@ -1,7 +1,7 @@
 name: zooper_table
 description: "A highly versatile and dynamic table widget"
 version: 1.0.0
-homepage: zooper.dev
+homepage: https://zooper.dev
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
