@@ -108,8 +108,4 @@ class RowService {
     // Call the callback
     tableConfigNotifier.currentState.callbackConfiguration.onRowSelected?.call(row, index);
   }
-
-  int getRowIndex(RowData row) {
-    return rowState.currentState.indexOf(row);
-  }
 }

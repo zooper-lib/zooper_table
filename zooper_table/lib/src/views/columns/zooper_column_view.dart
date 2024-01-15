@@ -13,7 +13,7 @@ class ZooperColumnView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer4<TableConfigurationNotifier, TableState, ColumnState, ColumnService>(
       builder: (context, tableConfigurationNotifier, tableState, columnStateNotifier, columnService, child) {
-        final columnIndex = columnStateNotifier.currentState.indexWhere((element) => element.identifier == identifier);
+        final columnIndex = columnService.getAbsoluteColumnIndexByIdentifier(identifier);
 
         final columnWidth = columnService.getColumnWidth(identifier);
         final minWidth = tableConfigurationNotifier.currentState.columnConfiguration.minWidthBuilder(identifier);
@@ -55,7 +55,9 @@ class ZooperColumnView extends StatelessWidget {
                   right: 0,
                   top: 0,
                   bottom: 0,
-                  child: _resizeHandle(context),
+                  child: ResizeHandleView(
+                    columnIdentifier: identifier,
+                  ),
                 ),
               ],
             ),
@@ -68,12 +70,14 @@ class ZooperColumnView extends StatelessWidget {
   Widget _title(BuildContext context) {
     return Consumer3<TableConfigurationNotifier, ColumnState, ColumnService>(
       builder: (context, tableConfigurationNotifier, columnStateNotifier, columnService, child) {
-        var column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
-        var columnIndex = columnService.getColumnIndexByIdentifier(column.identifier);
+        var column = columnStateNotifier.dataColumns.firstWhere((element) => element.identifier == identifier);
+
+        // The column index must be calculated by the
+        var relativeColumnIndex = columnService.getRelativeColumnIndexByIdentifier(column.identifier);
 
         return Expanded(
           child: ReorderableDragStartListener(
-            index: columnIndex,
+            index: relativeColumnIndex,
             child: GestureDetector(
               onTap: () => columnService.sortColumn(column.identifier),
               child: Text(
@@ -91,7 +95,7 @@ class ZooperColumnView extends StatelessWidget {
   Widget _sortIcon(BuildContext context) {
     return Consumer4<TableConfigurationNotifier, TableState, ColumnState, ColumnService>(
       builder: (context, tableConfigurationNotifier, tableState, columnStateNotifier, columnService, child) {
-        final column = columnStateNotifier.currentState.firstWhere((element) => element.identifier == identifier);
+        final column = columnStateNotifier.dataColumns.firstWhere((element) => element.identifier == identifier);
 
         final columnSortOrder = tableState.currentState.primaryColumnSort == null
             ? null
@@ -112,28 +116,6 @@ class ZooperColumnView extends StatelessWidget {
                 : columnSortOrder == SortOrder.descending
                     ? tableConfigurationNotifier.currentState.columnConfiguration.sortDescendingIconBuilder(identifier)
                     : tableConfigurationNotifier.currentState.columnConfiguration.sortAscendingIconBuilder(identifier),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _resizeHandle(BuildContext context) {
-    return Consumer3<TableConfigurationNotifier, TableState, ColumnService>(
-      builder: (context, tableConfigurationNotifier, tableState, columnService, child) {
-        if (tableConfigurationNotifier.currentState.columnConfiguration.canResizeBuilder(identifier) == false) {
-          return const SizedBox.shrink();
-        }
-
-        return MouseRegion(
-          cursor: SystemMouseCursors.resizeColumn,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {},
-            onHorizontalDragUpdate: (details) => columnService.updateColumnWidth(identifier, details.delta.dx),
-            child: Container(
-              width: 4,
-            ),
           ),
         );
       },

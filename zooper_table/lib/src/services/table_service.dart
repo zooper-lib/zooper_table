@@ -27,16 +27,21 @@ class TableService {
   }
 
   static List<String> _createColumnOrder(List<String> initialColumnOrder, List<ColumnData> columns) {
-    // Create the column order based on the initial order and the columns that are not in the initial order.
-    // The List is created like this:
-    // 1. Add all columns that are in the initial order
-    // 2. Add all columns that are not in the initial order
-    final columnOrder = [
-      ...initialColumnOrder,
-      ...columns.where((column) => !initialColumnOrder.contains(column.identifier)).map((column) => column.identifier)
+    // Split columns into sticky and normal
+    var leftStickyColumns = columns.where((c) => c.columnStick == ColumnStick.left).map((c) => c.identifier).toList();
+    var rightStickyColumns = columns.where((c) => c.columnStick == ColumnStick.right).map((c) => c.identifier).toList();
+    var normalColumns = columns.where((c) => c.columnStick == ColumnStick.center).map((c) => c.identifier).toList();
+
+    // Order each group separately
+    var orderedLeftSticky = leftStickyColumns.where((c) => initialColumnOrder.contains(c)).toList();
+    var orderedRightSticky = rightStickyColumns.where((c) => initialColumnOrder.contains(c)).toList();
+    var orderedNormal = [
+      ...initialColumnOrder.where((c) => normalColumns.contains(c)),
+      ...normalColumns.where((c) => !initialColumnOrder.contains(c))
     ];
 
-    return columnOrder;
+    // Combine them
+    return [...orderedLeftSticky, ...orderedNormal, ...orderedRightSticky];
   }
 
   static List<String> _reinitializeTableData(
@@ -44,17 +49,24 @@ class TableService {
     List<String> initialColumnOrder,
     List<ColumnData> columns,
   ) {
-    // Get all column identifiers which are new
-    final newColumnIdentifiers = initialColumnOrder.where((identifier) => !existingColumnOrder.contains(identifier));
+    // Similar logic to _createDataColumnOrder but for existing data
+    var leftStickyColumns = columns.where((c) => c.columnStick == ColumnStick.left).map((c) => c.identifier).toList();
+    var rightStickyColumns = columns.where((c) => c.columnStick == ColumnStick.right).map((c) => c.identifier).toList();
+    var normalColumns = columns.where((c) => c.columnStick == ColumnStick.center).map((c) => c.identifier).toList();
 
-    // Construct the new column order
-    final newColumnOrder = [...existingColumnOrder, ...newColumnIdentifiers];
+    // Handle sticky columns separately
+    var newLeftStickyOrder = existingColumnOrder.where((c) => leftStickyColumns.contains(c)).toList();
+    var newRightStickyOrder = existingColumnOrder.where((c) => rightStickyColumns.contains(c)).toList();
 
-    // Remove all non existent column order identifiers
-    newColumnOrder.removeWhere((identifier) => !columns.any((element) => element.identifier == identifier));
+    // Handle normal columns
+    var newNormalOrder = existingColumnOrder.where((c) => normalColumns.contains(c)).toList();
+    newNormalOrder
+        .addAll(initialColumnOrder.where((c) => !existingColumnOrder.contains(c) && normalColumns.contains(c)));
 
-    // Update the table data
-    return newColumnOrder;
+    // Remove non-existent columns
+    newNormalOrder.removeWhere((c) => !columns.any((element) => element.identifier == c));
+
+    return [...newLeftStickyOrder, ...newNormalOrder, ...newRightStickyOrder];
   }
 
   static Map<String, double> _initializeColumnWidths(
@@ -76,6 +88,4 @@ class TableService {
 
     return columnWidths;
   }
-
-  void sortColumn(String identifier) {}
 }

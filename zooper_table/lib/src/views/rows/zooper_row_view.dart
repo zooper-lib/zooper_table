@@ -20,7 +20,7 @@ class ZooperRowView<T> extends StatelessWidget {
     return Consumer3<RowService, TableConfigurationNotifier, ColumnState>(
       builder: (context, rowService, tableConfigurationNotifier, columnState, child) {
         // Get the available columns
-        var columns = columnState.currentState;
+        var columns = columnState.dataColumns;
 
         // Construct the cells for this row
         var cellViews = _buildCells(tableConfigurationNotifier.currentState, columns);

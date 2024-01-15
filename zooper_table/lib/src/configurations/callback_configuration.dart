@@ -12,7 +12,7 @@ class CallbackConfiguration {
   ///
   /// This callback is `null` by default. When implemented, it can be used to perform actions or
   /// updates in response to the sorting of a column, such as updating data or UI elements accordingly.
-  final void Function(String columnIdentifier, SortOrder sortOrder)? onColumnSort;
+  final void Function(String columnIdentifier, SortOrder? sortOrder)? onColumnSort;
 
   /// A callback that is triggered when a column is reordered.
   ///

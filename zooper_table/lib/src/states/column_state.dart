@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:zooper_table/zooper_table.dart';
 
 class ColumnState extends ChangeNotifier {
-  List<ColumnData> _state;
+  List<ColumnData> _dataColumns;
 
-  ColumnState(this._state);
+  ColumnState(this._dataColumns);
 
-  List<ColumnData> get currentState => _state;
+  List<ColumnData> get dataColumns => _dataColumns;
 
-  void updateColumn(ColumnData column) {
-    var index = _state.indexWhere((element) => element.identifier == column.identifier);
-    _state[index] = column;
+  void updateDataColumn(ColumnData column) {
+    var index = _dataColumns.indexWhere((element) => element.identifier == column.identifier);
+    _dataColumns[index] = column;
     notifyListeners();
   }
 
-  void updateAllColumns(List<ColumnData> columns) {
-    _state = columns;
+  void updateAllDataColumns(List<ColumnData> columns) {
+    _dataColumns = columns;
     notifyListeners();
   }
 
-  ColumnData getColumn(String identifier) {
-    return _state.firstWhere((element) => element.identifier == identifier);
+  ColumnData getDataColumn(String identifier) {
+    return _dataColumns.firstWhere((element) => element.identifier == identifier);
   }
 }
