@@ -12,10 +12,50 @@ class ColumnService {
     required this.tableState,
   });
 
-  int getColumnIndexByIdentifier(String identifier) {
-    var allColumns = columnState.currentState;
+  int getAbsoluteColumnIndexByIdentifier(String identifier) {
+    var allColumns = columnState.dataColumns;
 
     return allColumns.indexWhere((element) => element.identifier == identifier);
+  }
+
+  int getRelativeColumnIndexByIdentifier(String identifier) {
+    var allColumns = columnState.dataColumns;
+
+    var column = allColumns.firstWhere((element) => element.identifier == identifier);
+
+    final absoluteIndex = allColumns.indexWhere((element) => element.identifier == identifier);
+
+    if (column.columnStick == ColumnStick.left) {
+      return absoluteIndex;
+    }
+
+    if (column.columnStick == ColumnStick.center) {
+      return absoluteIndex - getColumnCountByStick(ColumnStick.left);
+    }
+
+    if (column.columnStick == ColumnStick.right) {
+      return absoluteIndex - getColumnCountByStick(ColumnStick.left) - getColumnCountByStick(ColumnStick.center);
+    }
+
+    return 0;
+  }
+
+  List<ColumnData> getColumnListByStick(ColumnStick columnStick) {
+    var allColumns = columnState.dataColumns;
+
+    return allColumns.where((element) => element.columnStick == columnStick).toList();
+  }
+
+  double getColumnWidthByStick(ColumnStick columnStick) {
+    var allColumns = columnState.dataColumns;
+
+    var filteredColumn = allColumns.where((element) => element.columnStick == columnStick);
+
+    if (filteredColumn.isEmpty) {
+      return 0;
+    }
+
+    return filteredColumn.map((e) => getColumnWidth(e.identifier)).reduce((value, element) => value + element);
   }
 
   double getColumnWidth(String identifier) {
@@ -55,20 +95,43 @@ class ColumnService {
             : null;
 
     tableState.updateState(tableStateSnapshot);
+
+    // Call the callback
+    tableConfigNotifier.currentState.callbackConfiguration.onColumnSort
+        ?.call(identifier, tableStateSnapshot.primaryColumnSort?.sortOrder);
   }
 
   bool isAnyColumnSorted() {
     return tableState.currentState.primaryColumnSort != null || tableState.currentState.secondaryColumnSort != null;
   }
 
-  void reorderColumn(int oldIndex, int newIndex) {
-    var columnSnapshot = columnState.currentState;
+  void reorderColumn(ColumnStick columnStick, int oldIndex, int newIndex) {
+    // Get the list of columns by stick
+    var columnListByStick = getColumnListByStick(columnStick);
 
-    // Get the column which should be reordered
-    var column = columnSnapshot[oldIndex];
+    // Get all columns without the stick
+    var columnSnapshotWithoutStick = getColumnListWithoutStick(columnState.dataColumns, columnStick);
+
+    // Get the list of columns that are reordered
+    final reorderedColumnList = getReorderedColumnList(columnListByStick, oldIndex, newIndex);
+
+    // Merge the list back together
+    final mergedColumnList = [...columnSnapshotWithoutStick, ...reorderedColumnList];
+
+    // Update all columns
+    columnState.updateAllDataColumns(mergedColumnList);
+
+    // Call the callback
+    tableConfigNotifier.currentState.callbackConfiguration.onColumnReorder
+        ?.call(columnListByStick[oldIndex].identifier, oldIndex, newIndex);
+  }
+
+  List<ColumnData> getReorderedColumnList(List<ColumnData> columnList, int oldIndex, int newIndex) {
+    // Get the column that is being dragged
+    var sourceColumn = columnList[oldIndex];
 
     // Remove the column from the list
-    columnSnapshot.removeAt(oldIndex);
+    columnList.removeAt(oldIndex);
 
     // Adjusting newIndex when dragging downwards
     if (oldIndex < newIndex) {
@@ -76,13 +139,17 @@ class ColumnService {
     }
 
     // Add the column to the new index
-    columnSnapshot.insert(newIndex, column);
+    columnList.insert(newIndex, sourceColumn);
 
-    // Update all columns
-    columnState.updateAllColumns(columnSnapshot);
+    return columnList;
+  }
 
-    // Call the callback
-    tableConfigNotifier.currentState.callbackConfiguration.onColumnReorder?.call(column.identifier, oldIndex, newIndex);
+  List<ColumnData> getColumnListWithoutStick(List<ColumnData> columns, ColumnStick columnStick) {
+    return columns.where((element) => element.columnStick != columnStick).toList();
+  }
+
+  int getColumnCountByStick(ColumnStick columnStick) {
+    return columnState.dataColumns.where((element) => element.columnStick == columnStick).length;
   }
 
   bool canResize(String columnIdentifier) {

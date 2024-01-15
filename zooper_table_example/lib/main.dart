@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zooper_table/zooper_table.dart';
+import 'package:zooper_table_example/random_generator.dart';
 import 'package:zooper_table_example/test_data.dart';
 
 void main() {
@@ -46,7 +47,7 @@ class MyHomePage extends StatelessWidget {
           cellConfiguration: CellConfiguration(),
         ),
         columns: [
-          ColumnData(identifier: 'id', title: 'ID'),
+          ColumnData(identifier: 'id', title: 'ID', columnStick: ColumnStick.left),
           ColumnData(identifier: 'name', title: 'Name'),
           ColumnData(identifier: 'age', title: 'Age'),
           ColumnData(identifier: 'height', title: 'Height'),
@@ -54,10 +55,10 @@ class MyHomePage extends StatelessWidget {
         data: List.generate(
           10,
           (index) => TestData(
-            id: '$index',
-            name: 'Test $index with some more text than usual',
-            age: index,
-            height: index.toDouble(),
+            id: RandomGenerator.random.nextInt(1000).toString(),
+            name: RandomGenerator.getRandomString(100),
+            age: RandomGenerator.random.nextInt(100),
+            height: RandomGenerator.random.nextDouble(),
           ),
         ),
       ),
