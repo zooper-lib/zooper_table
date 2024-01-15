@@ -18,7 +18,7 @@ dependencies:
   reorderables: ^0.6.0
 
   zooper_table:
-    path: ../zooper_table
+    path: ../
 
 dev_dependencies:
   flutter_test:
