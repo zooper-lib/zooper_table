@@ -5,21 +5,21 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "zooper_table_example",
-			"cwd": "zooper_table_example",
+			"name": "example",
+			"cwd": "example",
 			"request": "launch",
 			"type": "dart"
 		},
 		{
-			"name": "zooper_table_example (profile mode)",
-			"cwd": "zooper_table_example",
+			"name": "example (profile mode)",
+			"cwd": "example",
 			"request": "launch",
 			"type": "dart",
 			"flutterMode": "profile"
 		},
 		{
-			"name": "zooper_table_example (release mode)",
-			"cwd": "zooper_table_example",
+			"name": "example (release mode)",
+			"cwd": "example",
 			"request": "launch",
 			"type": "dart",
 			"flutterMode": "release"
