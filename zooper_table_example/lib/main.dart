@@ -52,16 +52,95 @@ class MyHomePage extends StatelessWidget {
           ColumnData(identifier: 'age', title: 'Age'),
           ColumnData(identifier: 'height', title: 'Height'),
         ],
-        data: List.generate(
-          10,
-          (index) => TestData(
-            id: RandomGenerator.random.nextInt(1000).toString(),
-            name: RandomGenerator.getRandomString(100),
-            age: RandomGenerator.random.nextInt(100),
-            height: RandomGenerator.random.nextDouble(),
-          ),
-        ),
+        data: _customList,
       ),
     );
   }
+
+  // ignore: unused_element
+  List<dynamic> get _generatedList => List.generate(
+        10,
+        (index) => TestData(
+          id: RandomGenerator.random.nextInt(1000).toString(),
+          name: RandomGenerator.getRandomString(100),
+          age: RandomGenerator.random.nextInt(100),
+          height: RandomGenerator.random.nextDouble(),
+        ),
+      );
+
+// ignore: unused_element
+  List<dynamic> get _customList => [
+        TestData(
+          id: '1',
+          name: 'John',
+          age: 20,
+          height: 1.8,
+        ),
+        TestData(
+          id: '2',
+          name: 'John',
+          age: 30,
+          height: 1.6,
+        ),
+        TestData(
+          id: '3',
+          name: 'John',
+          age: 40,
+          height: 1.7,
+        ),
+        TestData(
+          id: '4',
+          name: 'John',
+          age: 50,
+          height: 1.9,
+        ),
+        TestData(
+          id: '5',
+          name: 'Jane',
+          age: 60,
+          height: 2,
+        ),
+        TestData(
+          id: '6',
+          name: 'Jane',
+          age: 70,
+          height: 1.4,
+        ),
+        TestData(
+          id: '7',
+          name: 'Jane',
+          age: 80,
+          height: 2.1,
+        ),
+        TestData(
+          id: '8',
+          name: 'Jane',
+          age: 90,
+          height: 1.2,
+        ),
+        TestData(
+          id: '9',
+          name: 'Simon',
+          age: 35,
+          height: 1.2,
+        ),
+        TestData(
+          id: '10',
+          name: 'Simon',
+          age: 45,
+          height: 1.2,
+        ),
+        TestData(
+          id: '11',
+          name: 'Simon',
+          age: 55,
+          height: 1.6,
+        ),
+        TestData(
+          id: '12',
+          name: 'Simon',
+          age: 65,
+          height: 1.3,
+        ),
+      ];
 }

@@ -72,7 +72,7 @@ class ColumnConfiguration {
   /// - [identifier]: A string that identifies the column.
   ///
   /// If this function is not provided, a default function is used.
-  final Widget Function(String identifier) sortAscendingIconBuilder;
+  final Widget Function(String identifier) primarySortAscendingIconBuilder;
 
   /// A function that returns the icon for descending sort.
   ///
@@ -80,7 +80,11 @@ class ColumnConfiguration {
   /// - [identifier]: A string that identifies the column.
   ///
   /// If this function is not provided, a default function is used.
-  final Widget Function(String identifier) sortDescendingIconBuilder;
+  final Widget Function(String identifier) primarySortDescendingIconBuilder;
+
+  final Widget Function(String identifier) secondarySortAscendingIconBuilder;
+
+  final Widget Function(String identifier) secondarySortDescendingIconBuilder;
 
   ColumnConfiguration({
     bool Function(String identifier)? canResizeBuilder,
@@ -103,8 +107,10 @@ class ColumnConfiguration {
         paddingBuilder = paddingBuilder ?? _defaultPaddingBuilder,
         headerBorderBuilder = headerBorderBuilder ?? _defaultHeaderBorderBuilder,
         borderBuilder = borderBuilder ?? _defaultBorderBuilder,
-        sortAscendingIconBuilder = _defaultSortAscendingIconBuilder,
-        sortDescendingIconBuilder = _defaultSortDescendingIconBuilder;
+        primarySortAscendingIconBuilder = _defaultPrimarySortAscendingIconBuilder,
+        primarySortDescendingIconBuilder = _defaultPrimarySortDescendingIconBuilder,
+        secondarySortAscendingIconBuilder = _defaultSecondarySortAscendingIconBuilder,
+        secondarySortDescendingIconBuilder = _defaultSecondarySortDescendingIconBuilder;
 
   // Default canResize builder
   static bool _defaultCanResizeBuilder(String identifier) {
@@ -158,11 +164,19 @@ class ColumnConfiguration {
     return null;
   }
 
-  static Widget _defaultSortAscendingIconBuilder(String identifier) {
+  static Widget _defaultPrimarySortAscendingIconBuilder(String identifier) {
     return const Icon(LucideIcons.arrowDown, size: 16);
   }
 
-  static Widget _defaultSortDescendingIconBuilder(String identifier) {
+  static Widget _defaultPrimarySortDescendingIconBuilder(String identifier) {
     return const Icon(LucideIcons.arrowUp, size: 16);
+  }
+
+  static Widget _defaultSecondarySortAscendingIconBuilder(String identifier) {
+    return const Icon(LucideIcons.arrowDown, size: 12);
+  }
+
+  static Widget _defaultSecondarySortDescendingIconBuilder(String identifier) {
+    return const Icon(LucideIcons.arrowUp, size: 12);
   }
 }
