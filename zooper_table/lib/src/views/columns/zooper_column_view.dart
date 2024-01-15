@@ -49,20 +49,29 @@ class _ZooperColumnViewState extends State<ZooperColumnView> {
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  child: Container(
-                    width: columnWidth,
-                    padding:
-                        tableConfigurationNotifier.currentState.columnConfiguration.paddingBuilder(widget.identifier),
-                    decoration: BoxDecoration(
-                      border: tableConfigurationNotifier.currentState.columnConfiguration
-                          .borderBuilder(widget.identifier, columnIndex),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _title(context),
-                        _sortIcon(context),
-                      ],
+                  child: GestureDetector(
+                    onTap: () {
+                      if (_isControlKeyPressed) {
+                        columnService.sortColumn(widget.identifier, _isControlKeyPressed);
+                      } else {
+                        columnService.sortColumn(widget.identifier, _isControlKeyPressed);
+                      }
+                    },
+                    child: Container(
+                      width: columnWidth,
+                      padding:
+                          tableConfigurationNotifier.currentState.columnConfiguration.paddingBuilder(widget.identifier),
+                      decoration: BoxDecoration(
+                        border: tableConfigurationNotifier.currentState.columnConfiguration
+                            .borderBuilder(widget.identifier, columnIndex),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _title(context),
+                          _sortIcon(context),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -90,26 +99,15 @@ class _ZooperColumnViewState extends State<ZooperColumnView> {
         var column = columnStateNotifier.dataColumns.firstWhere((element) => element.identifier == widget.identifier);
 
         // The column index must be calculated by the
-        var relativeColumnIndex = columnService.getRelativeColumnIndexByIdentifier(column.identifier);
+        var relativeColumnIndex = columnService.getRelativeColumnIndexByIdentifier(widget.identifier);
 
         return Expanded(
           child: ReorderableDragStartListener(
             index: relativeColumnIndex,
-            child: GestureDetector(
-              onTap: () {
-                if (_isControlKeyPressed) {
-                  print('secondary sorting');
-                  columnService.sortColumn(column.identifier, _isControlKeyPressed);
-                } else {
-                  print('primary sorting');
-                  columnService.sortColumn(column.identifier, _isControlKeyPressed);
-                }
-              },
-              child: Text(
-                column.title,
-                overflow: TextOverflow.ellipsis,
-                style: tableConfigurationNotifier.currentState.columnConfiguration.textStyleBuilder(widget.identifier),
-              ),
+            child: Text(
+              column.title,
+              overflow: TextOverflow.ellipsis,
+              style: tableConfigurationNotifier.currentState.columnConfiguration.textStyleBuilder(widget.identifier),
             ),
           ),
         );
@@ -120,29 +118,28 @@ class _ZooperColumnViewState extends State<ZooperColumnView> {
   Widget _sortIcon(BuildContext context) {
     return Consumer4<TableConfigurationNotifier, TableState, ColumnState, ColumnService>(
       builder: (context, tableConfigurationNotifier, tableState, columnStateNotifier, columnService, child) {
-        final column = columnStateNotifier.dataColumns.firstWhere((element) => element.identifier == widget.identifier);
-
         if (tableConfigurationNotifier.currentState.columnConfiguration.canSortBuilder(widget.identifier) == false) {
           return const SizedBox.shrink();
         }
 
         return MouseRegion(
           cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () {
-              if (_isControlKeyPressed) {
-                print('secondary sorting');
-                columnService.sortColumn(column.identifier, true);
-              } else {
-                print('primary sorting');
-                columnService.sortColumn(column.identifier, false);
-              }
-            },
-            child: _getSortIcon(tableConfigurationNotifier.currentState, tableState),
-          ),
+          child: _getSortIcon(tableConfigurationNotifier.currentState, tableState),
         );
       },
     );
+  }
+
+  void _handleKeyPress(RawKeyEvent event) {
+    setState(() {
+      _isControlKeyPressed = event.isControlPressed;
+    });
+  }
+
+  @override
+  void dispose() {
+    RawKeyboard.instance.removeListener(_handleKeyPress);
+    super.dispose();
   }
 
   Widget _getSortIcon(TableConfiguration tableConfiguration, TableState tableState) {
@@ -193,17 +190,5 @@ class _ZooperColumnViewState extends State<ZooperColumnView> {
         : columnSortOrder == SortOrder.descending
             ? tableConfiguration.columnConfiguration.secondarySortDescendingIconBuilder(widget.identifier)
             : tableConfiguration.columnConfiguration.secondarySortAscendingIconBuilder(widget.identifier);
-  }
-
-  void _handleKeyPress(RawKeyEvent event) {
-    setState(() {
-      _isControlKeyPressed = event.isControlPressed;
-    });
-  }
-
-  @override
-  void dispose() {
-    RawKeyboard.instance.removeListener(_handleKeyPress);
-    super.dispose();
   }
 }
