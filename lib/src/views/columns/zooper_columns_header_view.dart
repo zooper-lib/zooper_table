@@ -51,6 +51,7 @@ class ZooperColumnsHeaderView extends StatelessWidget {
     return SizedBox(
       width: columnsWidth,
       child: ReorderableListView(
+        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         buildDefaultDragHandles: false,
         onReorder: (oldIndex, newIndex) => columnService.reorderColumn(columnStick, oldIndex, newIndex),

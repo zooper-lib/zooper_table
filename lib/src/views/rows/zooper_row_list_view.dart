@@ -20,21 +20,6 @@ class ZooperRowListView extends StatelessWidget {
                 children: rowViews,
                 onReorder: (oldIndex, newIndex) => rowService.reorderRow(oldIndex, newIndex),
               );
-
-              /* 
-              return CustomScrollView(
-                controller: ScrollController(),
-                slivers: <Widget>[
-                  ReorderableSliverList(
-                    enabled: rowService.isReorderingEnabled(),
-                    delegate: ReorderableSliverChildListDelegate(
-                      rowViews,
-                    ),
-                    onReorder: (oldIndex, newIndex) => rowService.reorderRow(oldIndex, newIndex),
-                  ),
-                ],
-              );
-              */
             },
           ),
         )
