@@ -58,6 +58,7 @@ This is the list of features which will be implemented in the future:
 
 - Multi selection of rows
 - Multi reordering of rows
+- Better commenting of code
 
 ## Contributing
 

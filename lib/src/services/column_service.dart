@@ -67,6 +67,17 @@ class ColumnService {
     return actualWith.clamp(minWidth, maxWidth);
   }
 
+  /// Returns the overall width of the table.
+  double getOverallWidth() {
+    final dragHandleWidth =
+        tableConfigNotifier.currentState.rowConfiguration.rowDragConfiguration.widthBuilder(0, null);
+
+    var allColumns = columnState.dataColumns;
+
+    return allColumns.map((e) => getColumnWidth(e.identifier)).reduce((value, element) => value + element) +
+        (dragHandleWidth ?? 0);
+  }
+
   void updateColumnWidth(String identifier, double delta) {
     final double minWidth = tableConfigNotifier.currentState.columnConfiguration.minWidthBuilder(identifier);
     final double maxWidth = tableConfigNotifier.currentState.columnConfiguration.maxWidthBuilder(identifier);

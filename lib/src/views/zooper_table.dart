@@ -28,6 +28,8 @@ class ZooperTable extends StatefulWidget {
 }
 
 class _ZooperTableState extends State<ZooperTable> {
+  final _horizontalScrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     List<RowData> rows = [];
@@ -95,16 +97,39 @@ class _ZooperTableState extends State<ZooperTable> {
           ),
         ),
       ],
-      child: Column(
-        children: [
-          SizedBox(
-            height: widget.tableConfiguration.columnConfiguration.heightBuilder(),
-            child: const ZooperColumnsHeaderView(),
-          ),
-          const Expanded(
-            child: ZooperRowListView(),
-          ),
-        ],
+      child: Consumer2<ColumnService, TableState>(
+        builder: (context, columnService, tableState, child) => LayoutBuilder(
+          builder: (context, constraints) {
+            // We need to get the overall width of the columns to determine the width of the scrollable area
+            final columnWidth = columnService.getOverallWidth();
+            final maxWidth = columnWidth > constraints.maxWidth ? columnWidth : constraints.maxWidth;
+
+            return Scrollbar(
+              controller: _horizontalScrollController,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _horizontalScrollController,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: maxWidth,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: widget.tableConfiguration.columnConfiguration.heightBuilder(),
+                        //width: columnService.getOverallWidth(),
+                        child: const ZooperColumnsHeaderView(),
+                      ),
+                      const Expanded(
+                        child: ZooperRowListView(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
